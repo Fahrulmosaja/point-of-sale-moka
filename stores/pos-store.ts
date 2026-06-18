@@ -1,31 +1,50 @@
 import { create } from 'zustand';
-import { PRODUCTS } from '../constants/products.constant';
+import { Product } from '../types/product.types';
 
 interface PosState {
+  products: Product[];
+  isLoading: boolean;
   searchQuery: string;
-  selectedCategoryId: string | null;
+  selectedCategory: string | null;
   favorites: string[];
   setSearchQuery: (query: string) => void;
-  setSelectedCategoryId: (categoryId: string | null) => void;
+  setSelectedCategory: (category: string | null) => void;
   toggleFavorite: (productId: string) => void;
+  fetchProducts: () => Promise<void>;
 }
 
-// Initial favorites based on the mock data
-const initialFavorites = PRODUCTS.filter((p) => p.isFavorite).map((p) => p.id);
-
-export const usePosStore = create<PosState>((set) => ({
+export const usePosStore = create<PosState>((set, get) => ({
+  products: [],
+  isLoading: false,
   searchQuery: '',
-  selectedCategoryId: null,
-  favorites: initialFavorites,
+  selectedCategory: null,
+  favorites: [],
+
   setSearchQuery: (query) => set({ searchQuery: query }),
-  setSelectedCategoryId: (categoryId) => set({ selectedCategoryId: categoryId }),
+  setSelectedCategory: (category) => set({ selectedCategory: category }),
+
   toggleFavorite: (productId) =>
-    set((state) => {
-      const isFav = state.favorites.includes(productId);
-      return {
-        favorites: isFav
-          ? state.favorites.filter((id) => id !== productId)
-          : [...state.favorites, productId],
-      };
-    }),
+    set((state) => ({
+      favorites: state.favorites.includes(productId)
+        ? state.favorites.filter((id) => id !== productId)
+        : [...state.favorites, productId],
+    })),
+
+  fetchProducts: async () => {
+    set({ isLoading: true });
+    try {
+      const res = await fetch('/api/product-menus?active=true');
+      if (res.ok) {
+        const data: Product[] = await res.json();
+        set({
+          products: data,
+          favorites: data.filter((p) => p.isFavorite).map((p) => p.id),
+        });
+      }
+    } catch (err) {
+      console.error('Failed to fetch products', err);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 }));

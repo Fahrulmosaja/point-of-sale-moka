@@ -1,13 +1,22 @@
 import { create } from 'zustand';
-import { OrderItem, OrderType } from '../types/order.types';
+import { OrderType } from '../types/sale.types';
 import { Product } from '../types/product.types';
 
+export interface CartItem {
+  id: string;
+  productMenuId: string;
+  product: Product;
+  quantity: number;
+  unitPrice: number;
+  notes?: string;
+}
+
 interface CartState {
-  items: OrderItem[];
+  items: CartItem[];
   orderType: OrderType;
   addItem: (product: Product, quantity?: number, notes?: string) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeItem: (productMenuId: string) => void;
+  updateQuantity: (productMenuId: string, quantity: number) => void;
   setOrderType: (type: OrderType) => void;
   clearCart: () => void;
 }
@@ -16,15 +25,15 @@ export const useCartStore = create<CartState>((set) => ({
   items: [],
   orderType: 'dine_in',
 
-  addItem: (product, quantity = 1, notes) => 
+  addItem: (product, quantity = 1, notes) =>
     set((state) => {
-      const existingItem = state.items.find((item) => item.productId === product.id);
-      if (existingItem) {
+      const existing = state.items.find((i) => i.productMenuId === product.id);
+      if (existing) {
         return {
-          items: state.items.map((item) =>
-            item.productId === product.id
-              ? { ...item, quantity: item.quantity + quantity, notes: notes || item.notes }
-              : item
+          items: state.items.map((i) =>
+            i.productMenuId === product.id
+              ? { ...i, quantity: i.quantity + quantity, notes: notes ?? i.notes }
+              : i
           ),
         };
       }
@@ -32,35 +41,34 @@ export const useCartStore = create<CartState>((set) => ({
         items: [
           ...state.items,
           {
-            id: `oi-${Date.now()}`,
-            productId: product.id,
-            product: product,
-            quantity: quantity,
-            price: product.price,
+            id: `ci-${Date.now()}`,
+            productMenuId: product.id,
+            product,
+            quantity,
+            unitPrice: product.price,
             notes,
           },
         ],
       };
     }),
 
-  removeItem: (productId) =>
+  removeItem: (productMenuId) =>
     set((state) => ({
-      items: state.items.filter((item) => item.productId !== productId),
+      items: state.items.filter((i) => i.productMenuId !== productMenuId),
     })),
 
-  updateQuantity: (productId, quantity) =>
+  updateQuantity: (productMenuId, quantity) =>
     set((state) => {
       if (quantity <= 0) {
-        return { items: state.items.filter((item) => item.productId !== productId) };
+        return { items: state.items.filter((i) => i.productMenuId !== productMenuId) };
       }
       return {
-        items: state.items.map((item) =>
-          item.productId === productId ? { ...item, quantity } : item
+        items: state.items.map((i) =>
+          i.productMenuId === productMenuId ? { ...i, quantity } : i
         ),
       };
     }),
 
   setOrderType: (type) => set({ orderType: type }),
-
   clearCart: () => set({ items: [] }),
 }));

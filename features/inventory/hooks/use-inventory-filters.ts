@@ -15,6 +15,11 @@ export function useInventoryFilters() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const inventoryItems = useInventoryStore((state) => state.items);
+  const fetchInventory = useInventoryStore((state) => state.fetchInventory);
+
+  useEffect(() => {
+    fetchInventory();
+  }, [fetchInventory]);
 
   // Sync tab if URL param changes (e.g. from notification dropdown)
   useEffect(() => {

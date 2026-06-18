@@ -8,21 +8,24 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Minus, Plus, Trash2 } from 'lucide-react';
-import { OrderType } from '@/types/order.types';
+import { OrderType } from '@/types/sale.types';
 import { formatCurrency } from '@/lib/utils';
+import { useState } from 'react';
 
 export function CartPanel() {
   const { items, orderType, setOrderType, updateQuantity, removeItem } = useCartStore();
   const { handleCheckout } = useCartOperations();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const tax = subtotal * 0.1; // 10% tax
+  const subtotal = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+  const tax = Math.round(subtotal * 0.1);
   const total = subtotal + tax;
 
-  const onCheckoutClick = () => {
-    handleCheckout('Cash');
+  const onCheckoutClick = async () => {
+    setIsCheckingOut(true);
+    await handleCheckout('Cash');
+    setIsCheckingOut(false);
   };
-
 
   return (
     <Card className="w-full lg:w-[350px] flex flex-col h-[calc(100vh-theme(spacing.20))] shrink-0 sticky top-4">
@@ -49,20 +52,20 @@ export function CartPanel() {
           ) : (
             <div className="flex flex-col gap-4 pb-4">
               {items.map((item) => (
-                <div key={item.productId} className="flex flex-col gap-2">
+                <div key={item.productMenuId} className="flex flex-col gap-2">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="text-sm font-semibold leading-none mb-1">{item.product?.name}</h4>
-                      <p className="text-xs text-muted-foreground">{formatCurrency(item.price)}</p>
+                      <h4 className="text-sm font-semibold leading-none mb-1">{item.product.name}</h4>
+                      <p className="text-xs text-muted-foreground">{formatCurrency(item.unitPrice)}</p>
                     </div>
-                    <p className="text-sm font-medium">{formatCurrency(item.price * item.quantity)}</p>
+                    <p className="text-sm font-medium">{formatCurrency(item.unitPrice * item.quantity)}</p>
                   </div>
                   <div className="flex items-center justify-between">
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                      onClick={() => removeItem(item.productId)}
+                      onClick={() => removeItem(item.productMenuId)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -71,7 +74,7 @@ export function CartPanel() {
                         variant="outline"
                         size="icon"
                         className="h-7 w-7 rounded-full"
-                        onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                        onClick={() => updateQuantity(item.productMenuId, item.quantity - 1)}
                       >
                         <Minus className="h-3 w-3" />
                       </Button>
@@ -80,7 +83,7 @@ export function CartPanel() {
                         variant="outline"
                         size="icon"
                         className="h-7 w-7 rounded-full"
-                        onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                        onClick={() => updateQuantity(item.productMenuId, item.quantity + 1)}
                       >
                         <Plus className="h-3 w-3" />
                       </Button>
@@ -112,10 +115,10 @@ export function CartPanel() {
         <Button
           className="w-full mt-6"
           size="lg"
-          disabled={items.length === 0}
+          disabled={items.length === 0 || isCheckingOut}
           onClick={onCheckoutClick}
         >
-          Checkout
+          {isCheckingOut ? 'Processing...' : 'Checkout'}
         </Button>
       </div>
     </Card>

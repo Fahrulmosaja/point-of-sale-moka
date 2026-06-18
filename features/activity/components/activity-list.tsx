@@ -1,45 +1,33 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { useOrdersStore } from '@/stores/orders-store';
-import { Order } from '@/types/order.types';
+import { useState, useMemo, useEffect } from 'react';
+import { useSalesStore } from '@/stores/sales-store';
+import { Sale } from '@/types/sale.types';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import { ActivityTable } from './activity-table';
 import { ActivityDetailModal } from './activity-detail-modal';
 
 export function ActivityList() {
-  const { orders, refundOrder } = useOrdersStore();
+  const { sales, fetchSales, isLoading } = useSalesStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const filteredOrders = useMemo(() => {
-    if (!searchQuery) return orders;
-    const lowerQuery = searchQuery.toLowerCase();
-    return orders.filter(
-      (order) =>
-        order.invoiceNumber.toLowerCase().includes(lowerQuery) ||
-        order.cashierName.toLowerCase().includes(lowerQuery) ||
-        order.paymentMethod.toLowerCase().includes(lowerQuery)
+  useEffect(() => {
+    fetchSales();
+  }, [fetchSales]);
+
+  const filteredSales = useMemo(() => {
+    if (!searchQuery) return sales;
+    const q = searchQuery.toLowerCase();
+    return sales.filter(
+      (s) =>
+        s.invoiceNumber.toLowerCase().includes(q) ||
+        s.cashierName.toLowerCase().includes(q) ||
+        s.paymentMethod.toLowerCase().includes(q)
     );
-  }, [orders, searchQuery]);
-
-  const handleViewDetail = (order: Order) => {
-    setSelectedOrder(order);
-    setModalOpen(true);
-  };
-
-  const handleRefund = (orderId: string) => {
-    refundOrder(orderId);
-    // Keep the modal open but update the displayed order's status
-    setSelectedOrder((prev) => (prev ? { ...prev, status: 'refunded' as const } : null));
-  };
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
-    setSelectedOrder(null);
-  };
+  }, [sales, searchQuery]);
 
   return (
     <div className="flex flex-col gap-6 w-full">
@@ -54,13 +42,23 @@ export function ActivityList() {
         />
       </div>
 
-      <ActivityTable orders={filteredOrders} onViewDetail={handleViewDetail} />
+      {isLoading ? (
+        <div className="space-y-2">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="h-14 rounded-md bg-muted animate-pulse" />
+          ))}
+        </div>
+      ) : (
+        <ActivityTable
+          sales={filteredSales}
+          onViewDetail={(sale) => { setSelectedSale(sale); setModalOpen(true); }}
+        />
+      )}
 
       <ActivityDetailModal
-        order={selectedOrder}
+        sale={selectedSale}
         open={modalOpen}
-        onClose={handleCloseModal}
-        onRefund={handleRefund}
+        onClose={() => { setModalOpen(false); setSelectedSale(null); }}
       />
     </div>
   );
