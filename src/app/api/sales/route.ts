@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { SalesService } from "@/features/sales/service";
+import { SalesService } from "@/features/activity/api/sales-service";
 import { withErrorHandler } from "@/lib/api-handler";
 
 export const GET = withErrorHandler(async () => {

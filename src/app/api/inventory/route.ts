@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { InventoryService } from "@/features/inventory/service";
+import { InventoryService } from "@/features/inventory/api/get-inventory";
 import { withErrorHandler } from "@/lib/api-handler";
 
 // Legacy route: now returns raw materials

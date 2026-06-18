@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ProductService } from "@/features/products/service";
+import { ProductService } from "@/features/pos/api/get-products";
 import { withErrorHandler } from "@/lib/api-handler";
 
 // Legacy route: redirect consumers to /api/product-menus

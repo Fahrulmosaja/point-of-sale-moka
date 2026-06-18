@@ -98,6 +98,7 @@ export function RawMaterialForm({
         toast.success("Raw material created");
       }
       queryClient.invalidateQueries({ queryKey: ["raw-materials"] });
+      queryClient.invalidateQueries({ queryKey: ["product-menus"] });
       reset();
       onClose();
     } catch (err: unknown) {

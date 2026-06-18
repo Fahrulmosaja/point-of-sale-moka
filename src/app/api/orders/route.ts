@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { OrderService } from "@/features/orders/service";
+import { OrderService } from "@/features/pos/api/order-service";
 import { withErrorHandler } from "@/lib/api-handler";
 
 // Legacy /api/orders route — now reads from sales table

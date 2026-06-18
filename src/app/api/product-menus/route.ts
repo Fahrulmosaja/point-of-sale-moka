@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { ProductMenuService } from "@/features/product-menus/service";
+import { ProductMenuService } from "@/features/inventory/api/product-menu-sevices";
 import { withErrorHandler } from "@/lib/api-handler";
 
 export const GET = withErrorHandler(async (req: NextRequest) => {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { CategoryService } from "@/features/categories/service";
+import { CategoryService } from "@/features/pos/api/get-categories";
 import { withErrorHandler } from "@/lib/api-handler";
 
 // Categories are now derived from productMenus.category strings

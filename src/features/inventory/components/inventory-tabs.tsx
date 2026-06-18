@@ -82,9 +82,8 @@ export function InventoryTabs() {
         ? api.delete(`/raw-materials/${id}`)
         : api.delete(`/product-menus/${id}`),
     onSuccess: (_, { type }) => {
-      queryClient.invalidateQueries({
-        queryKey: [type === "rm" ? "raw-materials" : "product-menus"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["raw-materials"] });
+      queryClient.invalidateQueries({ queryKey: ["product-menus"] });
       toast.success("Deleted successfully");
       setDeleteTarget(null);
     },

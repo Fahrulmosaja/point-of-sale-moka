@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { RecipeService } from "@/features/recipes/service";
+import { RecipeService } from "@/features/inventory/api/recipe-service";
 import { withErrorHandler } from "@/lib/api-handler";
 
 export const GET = withErrorHandler(async (_req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {

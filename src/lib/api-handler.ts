@@ -10,12 +10,12 @@ export function withErrorHandler(handler: AppRouteHandler) {
   return async (req: NextRequest, context: any) => {
     try {
       const result = await handler(req, context);
-      
+
       // If the result is already a Response (NextResponse), return it directly
       if (result instanceof Response) {
         return result;
       }
-      
+
       // Otherwise, wrap it in a successful JSON response if it's not a Response object
       return NextResponse.json(result);
     } catch (error) {
