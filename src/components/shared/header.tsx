@@ -7,7 +7,7 @@ import { Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePosStore } from "@/stores/pos-store";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { LowStockNotification } from "@/components/low-stock-notification";
+import { LowStockNotification } from "@/components/shared/low-stock-notification";
 
 export function Header() {
   const pathname = usePathname();
