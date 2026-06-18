@@ -1,12 +1,17 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/db/index';
-import { productMenus, recipes, recipeIngredients, rawMaterials } from '@/db/schema';
-import { eq, isNull } from 'drizzle-orm';
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/db/index";
+import {
+  productMenus,
+  recipes,
+  recipeIngredients,
+  rawMaterials,
+} from "@/db/schema";
+import { eq, isNull } from "drizzle-orm";
 import {
   calculateProductStock,
   calculateLowStockThreshold,
   getStockStatus,
-} from '@/lib/stock-calculator';
+} from "@/lib/stock-calculator";
 
 function genId() {
   return `pm-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -20,7 +25,9 @@ async function buildProductMenuResponse(activeOnly = false) {
     .orderBy(productMenus.name);
 
   const products = await query;
-  const activeProducts = activeOnly ? products.filter((p) => p.isActive) : products;
+  const activeProducts = activeOnly
+    ? products.filter((p) => p.isActive)
+    : products;
 
   // Fetch all ingredients with raw material stock in one query
   const allIngredients = await db
@@ -35,13 +42,18 @@ async function buildProductMenuResponse(activeOnly = false) {
       minimumStock: rawMaterials.minimumStock,
     })
     .from(recipeIngredients)
-    .innerJoin(rawMaterials, eq(recipeIngredients.rawMaterialId, rawMaterials.id));
+    .innerJoin(
+      rawMaterials,
+      eq(recipeIngredients.rawMaterialId, rawMaterials.id),
+    );
 
   const allRecipes = await db.select().from(recipes);
 
   return activeProducts.map((product) => {
     const recipe = allRecipes.find((r) => r.id === product.recipeId);
-    const ingredients = allIngredients.filter((i) => i.recipeId === product.recipeId);
+    const ingredients = allIngredients.filter(
+      (i) => i.recipeId === product.recipeId,
+    );
 
     const ingredientsForCalc = ingredients.map((i) => ({
       quantity: parseFloat(i.quantity),
@@ -56,7 +68,7 @@ async function buildProductMenuResponse(activeOnly = false) {
     return {
       ...product,
       price: parseFloat(product.price),
-      recipeName: recipe?.name ?? '',
+      recipeName: recipe?.name ?? "",
       availableStock,
       stockStatus,
       ingredients: ingredients.map((i) => ({
@@ -74,12 +86,15 @@ async function buildProductMenuResponse(activeOnly = false) {
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const activeOnly = searchParams.get('active') === 'true';
+    const activeOnly = searchParams.get("active") === "true";
     const result = await buildProductMenuResponse(activeOnly);
     return NextResponse.json(result);
   } catch (err) {
-    console.error('[GET /api/product-menus]', err);
-    return NextResponse.json({ error: 'Failed to fetch product menus' }, { status: 500 });
+    console.error("[GET /api/product-menus]", err);
+    return NextResponse.json(
+      { error: "Failed to fetch product menus" },
+      { status: 500 },
+    );
   }
 }
 
@@ -89,7 +104,10 @@ export async function POST(req: NextRequest) {
     const { name, category, price, recipeId, imageUrl, isActive } = body;
 
     if (!name || !category || !price || !recipeId) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 },
+      );
     }
 
     const id = genId();
@@ -110,7 +128,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ id }, { status: 201 });
   } catch (err) {
-    console.error('[POST /api/product-menus]', err);
-    return NextResponse.json({ error: 'Failed to create product menu' }, { status: 500 });
+    console.error("[POST /api/product-menus]", err);
+    return NextResponse.json(
+      { error: "Failed to create product menu" },
+      { status: 500 },
+    );
   }
 }

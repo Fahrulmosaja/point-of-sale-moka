@@ -1,5 +1,5 @@
-export type InventoryType = 'product' | 'raw_material';
-export type StockStatus = 'healthy' | 'low_stock' | 'out_of_stock';
+export type InventoryType = "product" | "raw_material";
+export type StockStatus = "healthy" | "low_stock" | "out_of_stock";
 
 export interface RequiredMaterial {
   materialId: string;

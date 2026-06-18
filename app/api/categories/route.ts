@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
-import { db } from '@/db/index';
-import { productMenus } from '@/db/schema';
-import { isNull } from 'drizzle-orm';
+import { NextResponse } from "next/server";
+import { db } from "@/db/index";
+import { productMenus } from "@/db/schema";
+import { isNull } from "drizzle-orm";
 
 // Categories are now derived from productMenus.category strings
 export async function GET() {
@@ -12,14 +12,17 @@ export async function GET() {
       .where(isNull(productMenus.deletedAt));
 
     const uniqueCategories = Array.from(
-      new Set(products.map((p) => p.category))
+      new Set(products.map((p) => p.category)),
     )
       .sort()
       .map((name, i) => ({ id: name, name }));
 
     return NextResponse.json(uniqueCategories);
   } catch (error) {
-    console.error('Error fetching categories:', error);
-    return NextResponse.json({ error: 'Failed to fetch categories' }, { status: 500 });
+    console.error("Error fetching categories:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch categories" },
+      { status: 500 },
+    );
   }
 }

@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { InventoryItem, StockStatus } from '../types/inventory.types';
+import { create } from "zustand";
+import { InventoryItem, StockStatus } from "../types/inventory.types";
 
 interface InventoryState {
   items: InventoryItem[];
@@ -11,14 +11,18 @@ interface InventoryState {
 }
 
 function computeStatus(stock: number, minStock: number): StockStatus {
-  if (stock <= 0) return 'out_of_stock';
-  if (stock < minStock) return 'low_stock';
-  return 'healthy';
+  if (stock <= 0) return "out_of_stock";
+  if (stock < minStock) return "low_stock";
+  return "healthy";
 }
 
-function deductProductStock(items: InventoryItem[], productName: string, quantity: number): InventoryItem[] {
+function deductProductStock(
+  items: InventoryItem[],
+  productName: string,
+  quantity: number,
+): InventoryItem[] {
   return items.map((item) => {
-    if (item.name === productName && item.type === 'product') {
+    if (item.name === productName && item.type === "product") {
       const newStock = Math.max(0, item.stock - quantity);
       return {
         ...item,
@@ -31,15 +35,22 @@ function deductProductStock(items: InventoryItem[], productName: string, quantit
   });
 }
 
-function deductRawMaterials(items: InventoryItem[], productItem: InventoryItem, quantity: number): InventoryItem[] {
+function deductRawMaterials(
+  items: InventoryItem[],
+  productItem: InventoryItem,
+  quantity: number,
+): InventoryItem[] {
   if (!productItem.requiredMaterials) return items;
 
   return items.map((item) => {
     const material = productItem.requiredMaterials!.find(
-      (m) => m.materialId === item.id
+      (m) => m.materialId === item.id,
     );
     if (!material) return item;
-    const newStock = Math.max(0, item.stock - material.amountPerUnit * quantity);
+    const newStock = Math.max(
+      0,
+      item.stock - material.amountPerUnit * quantity,
+    );
     return {
       ...item,
       stock: parseFloat(newStock.toFixed(3)),
@@ -49,9 +60,15 @@ function deductRawMaterials(items: InventoryItem[], productItem: InventoryItem, 
   });
 }
 
-export function calculateDeductedInventory(items: InventoryItem[], productName: string, quantity: number): InventoryItem[] {
-  const productItem = items.find((item) => item.name === productName && item.type === 'product');
-  
+export function calculateDeductedInventory(
+  items: InventoryItem[],
+  productName: string,
+  quantity: number,
+): InventoryItem[] {
+  const productItem = items.find(
+    (item) => item.name === productName && item.type === "product",
+  );
+
   let updatedItems = deductProductStock(items, productName, quantity);
 
   if (productItem?.requiredMaterials) {
@@ -67,33 +84,33 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
 
   deductStock: (productName, quantity) =>
     set((state) => ({
-      items: calculateDeductedInventory(state.items, productName, quantity)
+      items: calculateDeductedInventory(state.items, productName, quantity),
     })),
 
   getLowStockItems: () => {
     return get().items.filter(
-      (item) => item.status === 'low_stock' || item.status === 'out_of_stock'
+      (item) => item.status === "low_stock" || item.status === "out_of_stock",
     );
   },
 
   getAlertCount: () => {
     return get().items.filter(
-      (item) => item.status === 'low_stock' || item.status === 'out_of_stock'
+      (item) => item.status === "low_stock" || item.status === "out_of_stock",
     ).length;
   },
 
   fetchInventory: async () => {
     set({ isLoading: true });
     try {
-      const res = await fetch('/api/inventory');
+      const res = await fetch("/api/inventory");
       if (res.ok) {
         const data = await res.json();
         set({ items: data });
       }
     } catch (error) {
-      console.error('Failed to fetch inventory', error);
+      console.error("Failed to fetch inventory", error);
     } finally {
       set({ isLoading: false });
     }
-  }
+  },
 }));

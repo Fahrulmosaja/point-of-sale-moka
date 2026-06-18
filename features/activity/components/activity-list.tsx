@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useState, useMemo, useEffect } from 'react';
-import { useSalesStore } from '@/stores/sales-store';
-import { Sale } from '@/types/sale.types';
-import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
-import { ActivityTable } from './activity-table';
-import { ActivityDetailModal } from './activity-detail-modal';
+import { useState, useMemo, useEffect } from "react";
+import { useSalesStore } from "@/stores/sales-store";
+import { Sale } from "@/types/sale.types";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import { ActivityTable } from "./activity-table";
+import { ActivityDetailModal } from "./activity-detail-modal";
 
 export function ActivityList() {
   const { sales, fetchSales, isLoading } = useSalesStore();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -25,7 +25,7 @@ export function ActivityList() {
       (s) =>
         s.invoiceNumber.toLowerCase().includes(q) ||
         s.cashierName.toLowerCase().includes(q) ||
-        s.paymentMethod.toLowerCase().includes(q)
+        s.paymentMethod.toLowerCase().includes(q),
     );
   }, [sales, searchQuery]);
 
@@ -51,14 +51,20 @@ export function ActivityList() {
       ) : (
         <ActivityTable
           sales={filteredSales}
-          onViewDetail={(sale) => { setSelectedSale(sale); setModalOpen(true); }}
+          onViewDetail={(sale) => {
+            setSelectedSale(sale);
+            setModalOpen(true);
+          }}
         />
       )}
 
       <ActivityDetailModal
         sale={selectedSale}
         open={modalOpen}
-        onClose={() => { setModalOpen(false); setSelectedSale(null); }}
+        onClose={() => {
+          setModalOpen(false);
+          setSelectedSale(null);
+        }}
       />
     </div>
   );

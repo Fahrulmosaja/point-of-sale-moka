@@ -1,12 +1,18 @@
-'use client';
+"use client";
 
-import { usePosStore } from '@/stores/pos-store';
-import { MenuCard } from './menu-card';
-import { useMemo, useEffect } from 'react';
+import { usePosStore } from "@/stores/pos-store";
+import { MenuCard } from "./menu-card";
+import { useMemo, useEffect } from "react";
 
 export function MenuGrid() {
-  const { products, searchQuery, selectedCategory, favorites, fetchProducts, isLoading } =
-    usePosStore();
+  const {
+    products,
+    searchQuery,
+    selectedCategory,
+    favorites,
+    fetchProducts,
+    isLoading,
+  } = usePosStore();
 
   useEffect(() => {
     fetchProducts();
@@ -21,7 +27,9 @@ export function MenuGrid() {
 
     if (searchQuery) {
       const lowerQuery = searchQuery.toLowerCase();
-      filtered = filtered.filter((p) => p.name.toLowerCase().includes(lowerQuery));
+      filtered = filtered.filter((p) =>
+        p.name.toLowerCase().includes(lowerQuery),
+      );
     }
 
     // Sort: Favorites first, then by name
@@ -39,7 +47,10 @@ export function MenuGrid() {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {Array.from({ length: 10 }).map((_, i) => (
-          <div key={i} className="rounded-lg bg-muted animate-pulse aspect-[3/4]" />
+          <div
+            key={i}
+            className="rounded-lg bg-muted animate-pulse aspect-[3/4]"
+          />
         ))}
       </div>
     );

@@ -1,4 +1,4 @@
-import { StockStatus } from '@/types/raw-material.types';
+import { StockStatus } from "@/types/raw-material.types";
 
 interface Ingredient {
   quantity: number; // required per serving
@@ -31,11 +31,11 @@ export function calculateProductStock(ingredients: Ingredient[]): number {
  */
 export function getStockStatus(
   availableStock: number,
-  lowStockThreshold: number
+  lowStockThreshold: number,
 ): StockStatus {
-  if (availableStock <= 0) return 'out_of_stock';
-  if (availableStock <= lowStockThreshold) return 'low_stock';
-  return 'healthy';
+  if (availableStock <= 0) return "out_of_stock";
+  if (availableStock <= lowStockThreshold) return "low_stock";
+  return "healthy";
 }
 
 /**
@@ -57,9 +57,9 @@ export function calculateLowStockThreshold(ingredients: Ingredient[]): number {
  */
 export function getRawMaterialStatus(
   currentStock: number,
-  minimumStock: number
+  minimumStock: number,
 ): StockStatus {
-  if (currentStock <= 0) return 'out_of_stock';
-  if (currentStock <= minimumStock) return 'low_stock';
-  return 'healthy';
+  if (currentStock <= 0) return "out_of_stock";
+  if (currentStock <= minimumStock) return "low_stock";
+  return "healthy";
 }

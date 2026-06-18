@@ -1,5 +1,5 @@
-import { StockStatus } from './raw-material.types';
-import { RecipeIngredient } from './recipe.types';
+import { StockStatus } from "./raw-material.types";
+import { RecipeIngredient } from "./recipe.types";
 
 export interface ProductMenu {
   id: string;

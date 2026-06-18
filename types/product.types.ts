@@ -1,6 +1,6 @@
 // Keep for backwards-compat with cart store — maps to ProductMenu at runtime
-import { StockStatus } from './raw-material.types';
-import { RecipeIngredient } from './recipe.types';
+import { StockStatus } from "./raw-material.types";
+import { RecipeIngredient } from "./recipe.types";
 
 export interface Category {
   id: string;

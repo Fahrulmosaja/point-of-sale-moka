@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useState, useMemo, useEffect } from 'react';
-import { Order, OrderStatus } from '@/types/order.types';
-import { useOrdersStore } from '@/stores/orders-store';
-import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
-import { OnlineOrderFilters } from './online-order-filters';
-import { OnlineOrderCard } from './online-order-card';
-import { OnlineOrderDetailSheet } from './online-order-detail-sheet';
+import { useState, useMemo, useEffect } from "react";
+import { Order, OrderStatus } from "@/types/order.types";
+import { useOrdersStore } from "@/stores/orders-store";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import { OnlineOrderFilters } from "./online-order-filters";
+import { OnlineOrderCard } from "./online-order-card";
+import { OnlineOrderDetailSheet } from "./online-order-detail-sheet";
 
-type FilterValue = 'all' | OrderStatus;
+type FilterValue = "all" | OrderStatus;
 
 export function OnlineOrderList() {
   const { orders, fetchOrders, isLoading } = useOrdersStore();
-  const [activeFilter, setActiveFilter] = useState<FilterValue>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState<FilterValue>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -22,22 +22,25 @@ export function OnlineOrderList() {
     fetchOrders();
   }, [fetchOrders]);
 
-  const onlineOrders = useMemo(() => orders.filter((o) => o.type === 'online'), [orders]);
+  const onlineOrders = useMemo(
+    () => orders.filter((o) => o.type === "online"),
+    [orders],
+  );
 
   const counts = useMemo<Record<FilterValue, number>>(() => {
     return {
       all: onlineOrders.length,
-      pending: onlineOrders.filter((o) => o.status === 'pending').length,
-      completed: onlineOrders.filter((o) => o.status === 'completed').length,
-      cancelled: onlineOrders.filter((o) => o.status === 'cancelled').length,
-      refunded: onlineOrders.filter((o) => o.status === 'refunded').length,
+      pending: onlineOrders.filter((o) => o.status === "pending").length,
+      completed: onlineOrders.filter((o) => o.status === "completed").length,
+      cancelled: onlineOrders.filter((o) => o.status === "cancelled").length,
+      refunded: onlineOrders.filter((o) => o.status === "refunded").length,
     };
   }, [onlineOrders]);
 
   const filteredOrders = useMemo(() => {
     let result = onlineOrders;
 
-    if (activeFilter !== 'all') {
+    if (activeFilter !== "all") {
       result = result.filter((o) => o.status === activeFilter);
     }
 
@@ -46,14 +49,14 @@ export function OnlineOrderList() {
       result = result.filter(
         (o) =>
           o.invoiceNumber.toLowerCase().includes(q) ||
-          o.paymentMethod.toLowerCase().includes(q)
+          o.paymentMethod.toLowerCase().includes(q),
       );
     }
 
     // Pending first
     return [...result].sort((a, b) => {
-      if (a.status === 'pending' && b.status !== 'pending') return -1;
-      if (b.status === 'pending' && a.status !== 'pending') return 1;
+      if (a.status === "pending" && b.status !== "pending") return -1;
+      if (b.status === "pending" && a.status !== "pending") return 1;
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
   }, [activeFilter, searchQuery]);
@@ -87,7 +90,9 @@ export function OnlineOrderList() {
       {/* Grid */}
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20 text-center gap-3">
-          <p className="text-sm text-muted-foreground">Loading online orders...</p>
+          <p className="text-sm text-muted-foreground">
+            Loading online orders...
+          </p>
         </div>
       ) : filteredOrders.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -104,7 +109,9 @@ export function OnlineOrderList() {
           <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
             <Search className="h-5 w-5 text-muted-foreground" />
           </div>
-          <p className="text-sm text-muted-foreground">No online orders found.</p>
+          <p className="text-sm text-muted-foreground">
+            No online orders found.
+          </p>
         </div>
       )}
 

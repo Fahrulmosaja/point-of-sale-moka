@@ -1,5 +1,5 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,10 +10,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Clock, LogOut } from 'lucide-react';
-import { formatTime, formatDuration } from '@/lib/date-utils';
-import { ShiftData } from '@/constants/shift.constant';
+} from "@/components/ui/alert-dialog";
+import { Clock, LogOut } from "lucide-react";
+import { formatTime, formatDuration } from "@/lib/date-utils";
+import { ShiftData } from "@/constants/shift.constant";
 
 interface ShiftHeaderProps {
   shift: ShiftData;
@@ -21,7 +21,11 @@ interface ShiftHeaderProps {
   onEndShift: () => void;
 }
 
-export function ShiftHeader({ shift, shiftEnded, onEndShift }: ShiftHeaderProps) {
+export function ShiftHeader({
+  shift,
+  shiftEnded,
+  onEndShift,
+}: ShiftHeaderProps) {
   return (
     <div className="flex items-center justify-between gap-4">
       <div className="flex items-center gap-3">
@@ -33,7 +37,9 @@ export function ShiftHeader({ shift, shiftEnded, onEndShift }: ShiftHeaderProps)
                 Active
               </Badge>
             ) : (
-              <Badge variant="outline" className="text-xs">Ended</Badge>
+              <Badge variant="outline" className="text-xs">
+                Ended
+              </Badge>
             )}
           </div>
           <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-0.5">
@@ -59,16 +65,16 @@ export function ShiftHeader({ shift, shiftEnded, onEndShift }: ShiftHeaderProps)
             <AlertDialogHeader>
               <AlertDialogTitle>End current shift?</AlertDialogTitle>
               <AlertDialogDescription>
-                This will close the shift for <strong>{shift.cashierName}</strong>. All
-                transactions will be saved. This action cannot be undone.
+                This will close the shift for{" "}
+                <strong>{shift.cashierName}</strong>. All transactions will be
+                saved. This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={onEndShift}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              >
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                 End Shift
               </AlertDialogAction>
             </AlertDialogFooter>

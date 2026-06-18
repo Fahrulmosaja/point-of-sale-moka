@@ -1,4 +1,4 @@
-import { Unit } from './raw-material.types';
+import { Unit } from "./raw-material.types";
 
 export interface RecipeIngredient {
   id: string;
@@ -27,7 +27,9 @@ export interface CreateRecipeInput {
   }[];
 }
 
-export interface UpdateRecipeInput extends Partial<Omit<CreateRecipeInput, 'ingredients'>> {
+export interface UpdateRecipeInput extends Partial<
+  Omit<CreateRecipeInput, "ingredients">
+> {
   ingredients?: {
     rawMaterialId: string;
     quantity: number;

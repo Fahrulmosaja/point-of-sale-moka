@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/db/index';
-import { recipes, recipeIngredients, rawMaterials } from '@/db/schema';
-import { eq, isNull } from 'drizzle-orm';
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/db/index";
+import { recipes, recipeIngredients, rawMaterials } from "@/db/schema";
+import { eq, isNull } from "drizzle-orm";
 
 function genId() {
   return `rec-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -25,7 +25,10 @@ export async function GET() {
         quantity: recipeIngredients.quantity,
       })
       .from(recipeIngredients)
-      .innerJoin(rawMaterials, eq(recipeIngredients.rawMaterialId, rawMaterials.id));
+      .innerJoin(
+        rawMaterials,
+        eq(recipeIngredients.rawMaterialId, rawMaterials.id),
+      );
 
     const result = allRecipes.map((recipe) => ({
       ...recipe,
@@ -39,8 +42,11 @@ export async function GET() {
 
     return NextResponse.json(result);
   } catch (err) {
-    console.error('[GET /api/recipes]', err);
-    return NextResponse.json({ error: 'Failed to fetch recipes' }, { status: 500 });
+    console.error("[GET /api/recipes]", err);
+    return NextResponse.json(
+      { error: "Failed to fetch recipes" },
+      { status: 500 },
+    );
   }
 }
 
@@ -50,13 +56,24 @@ export async function POST(req: NextRequest) {
     const { name, description, ingredients } = body;
 
     if (!name || !ingredients || ingredients.length === 0) {
-      return NextResponse.json({ error: 'Name and at least one ingredient are required' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Name and at least one ingredient are required" },
+        { status: 400 },
+      );
     }
 
     const id = genId();
     const now = new Date();
 
-    await db.insert(recipes).values({ id, name, description: description || null, createdAt: now, updatedAt: now });
+    await db
+      .insert(recipes)
+      .values({
+        id,
+        name,
+        description: description || null,
+        createdAt: now,
+        updatedAt: now,
+      });
 
     for (const ing of ingredients) {
       await db.insert(recipeIngredients).values({
@@ -69,7 +86,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ id }, { status: 201 });
   } catch (err) {
-    console.error('[POST /api/recipes]', err);
-    return NextResponse.json({ error: 'Failed to create recipe' }, { status: 500 });
+    console.error("[POST /api/recipes]", err);
+    return NextResponse.json(
+      { error: "Failed to create recipe" },
+      { status: 500 },
+    );
   }
 }

@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { OrderType } from '../types/sale.types';
-import { Product } from '../types/product.types';
+import { create } from "zustand";
+import { OrderType } from "../types/sale.types";
+import { Product } from "../types/product.types";
 
 export interface CartItem {
   id: string;
@@ -23,7 +23,7 @@ interface CartState {
 
 export const useCartStore = create<CartState>((set) => ({
   items: [],
-  orderType: 'dine_in',
+  orderType: "dine_in",
 
   addItem: (product, quantity = 1, notes) =>
     set((state) => {
@@ -32,8 +32,12 @@ export const useCartStore = create<CartState>((set) => ({
         return {
           items: state.items.map((i) =>
             i.productMenuId === product.id
-              ? { ...i, quantity: i.quantity + quantity, notes: notes ?? i.notes }
-              : i
+              ? {
+                  ...i,
+                  quantity: i.quantity + quantity,
+                  notes: notes ?? i.notes,
+                }
+              : i,
           ),
         };
       }
@@ -60,11 +64,13 @@ export const useCartStore = create<CartState>((set) => ({
   updateQuantity: (productMenuId, quantity) =>
     set((state) => {
       if (quantity <= 0) {
-        return { items: state.items.filter((i) => i.productMenuId !== productMenuId) };
+        return {
+          items: state.items.filter((i) => i.productMenuId !== productMenuId),
+        };
       }
       return {
         items: state.items.map((i) =>
-          i.productMenuId === productMenuId ? { ...i, quantity } : i
+          i.productMenuId === productMenuId ? { ...i, quantity } : i,
         ),
       };
     }),

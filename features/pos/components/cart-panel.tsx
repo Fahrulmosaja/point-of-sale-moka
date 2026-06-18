@@ -1,29 +1,33 @@
-'use client';
+"use client";
 
-import { useCartStore } from '@/stores/cart-store';
-import { useCartOperations } from '../hooks/use-cart-operations';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { Minus, Plus, Trash2 } from 'lucide-react';
-import { OrderType } from '@/types/sale.types';
-import { formatCurrency } from '@/lib/utils';
-import { useState } from 'react';
+import { useCartStore } from "@/stores/cart-store";
+import { useCartOperations } from "../hooks/use-cart-operations";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Minus, Plus, Trash2 } from "lucide-react";
+import { OrderType } from "@/types/sale.types";
+import { formatCurrency } from "@/lib/utils";
+import { useState } from "react";
 
 export function CartPanel() {
-  const { items, orderType, setOrderType, updateQuantity, removeItem } = useCartStore();
+  const { items, orderType, setOrderType, updateQuantity, removeItem } =
+    useCartStore();
   const { handleCheckout } = useCartOperations();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-  const subtotal = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.unitPrice * item.quantity,
+    0,
+  );
   const tax = Math.round(subtotal * 0.1);
   const total = subtotal + tax;
 
   const onCheckoutClick = async () => {
     setIsCheckingOut(true);
-    await handleCheckout('Cash');
+    await handleCheckout("Cash");
     setIsCheckingOut(false);
   };
 
@@ -34,8 +38,7 @@ export function CartPanel() {
         <Tabs
           value={orderType}
           onValueChange={(v) => setOrderType(v as OrderType)}
-          className="w-full mt-4"
-        >
+          className="w-full mt-4">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="dine_in">Dine In</TabsTrigger>
             <TabsTrigger value="take_away">Take Away</TabsTrigger>
@@ -55,18 +58,23 @@ export function CartPanel() {
                 <div key={item.productMenuId} className="flex flex-col gap-2">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="text-sm font-semibold leading-none mb-1">{item.product.name}</h4>
-                      <p className="text-xs text-muted-foreground">{formatCurrency(item.unitPrice)}</p>
+                      <h4 className="text-sm font-semibold leading-none mb-1">
+                        {item.product.name}
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        {formatCurrency(item.unitPrice)}
+                      </p>
                     </div>
-                    <p className="text-sm font-medium">{formatCurrency(item.unitPrice * item.quantity)}</p>
+                    <p className="text-sm font-medium">
+                      {formatCurrency(item.unitPrice * item.quantity)}
+                    </p>
                   </div>
                   <div className="flex items-center justify-between">
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                      onClick={() => removeItem(item.productMenuId)}
-                    >
+                      onClick={() => removeItem(item.productMenuId)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                     <div className="flex items-center gap-3">
@@ -74,17 +82,21 @@ export function CartPanel() {
                         variant="outline"
                         size="icon"
                         className="h-7 w-7 rounded-full"
-                        onClick={() => updateQuantity(item.productMenuId, item.quantity - 1)}
-                      >
+                        onClick={() =>
+                          updateQuantity(item.productMenuId, item.quantity - 1)
+                        }>
                         <Minus className="h-3 w-3" />
                       </Button>
-                      <span className="text-sm w-4 text-center">{item.quantity}</span>
+                      <span className="text-sm w-4 text-center">
+                        {item.quantity}
+                      </span>
                       <Button
                         variant="outline"
                         size="icon"
                         className="h-7 w-7 rounded-full"
-                        onClick={() => updateQuantity(item.productMenuId, item.quantity + 1)}
-                      >
+                        onClick={() =>
+                          updateQuantity(item.productMenuId, item.quantity + 1)
+                        }>
                         <Plus className="h-3 w-3" />
                       </Button>
                     </div>
@@ -116,9 +128,8 @@ export function CartPanel() {
           className="w-full mt-6"
           size="lg"
           disabled={items.length === 0 || isCheckingOut}
-          onClick={onCheckoutClick}
-        >
-          {isCheckingOut ? 'Processing...' : 'Checkout'}
+          onClick={onCheckoutClick}>
+          {isCheckingOut ? "Processing..." : "Checkout"}
         </Button>
       </div>
     </Card>

@@ -1,5 +1,5 @@
-export type Unit = 'gr' | 'ml' | 'pcs';
-export type StockStatus = 'healthy' | 'low_stock' | 'out_of_stock';
+export type Unit = "gr" | "ml" | "pcs";
+export type StockStatus = "healthy" | "low_stock" | "out_of_stock";
 
 export interface RawMaterial {
   id: string;

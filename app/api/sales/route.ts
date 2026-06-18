@@ -1,14 +1,11 @@
-import { NextResponse } from 'next/server';
-import { db } from '@/db/index';
-import { sales, saleItems, productMenus } from '@/db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { NextResponse } from "next/server";
+import { db } from "@/db/index";
+import { sales, saleItems, productMenus } from "@/db/schema";
+import { eq, desc } from "drizzle-orm";
 
 export async function GET() {
   try {
-    const allSales = await db
-      .select()
-      .from(sales)
-      .orderBy(desc(sales.date));
+    const allSales = await db.select().from(sales).orderBy(desc(sales.date));
 
     const allItems = await db
       .select({
@@ -39,7 +36,10 @@ export async function GET() {
 
     return NextResponse.json(result);
   } catch (err) {
-    console.error('[GET /api/sales]', err);
-    return NextResponse.json({ error: 'Failed to fetch sales' }, { status: 500 });
+    console.error("[GET /api/sales]", err);
+    return NextResponse.json(
+      { error: "Failed to fetch sales" },
+      { status: 500 },
+    );
   }
 }

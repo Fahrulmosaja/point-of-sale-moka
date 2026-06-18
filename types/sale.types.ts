@@ -1,5 +1,5 @@
-export type OrderType = 'dine_in' | 'take_away' | 'online';
-export type SaleStatus = 'completed' | 'refunded' | 'void';
+export type OrderType = "dine_in" | "take_away" | "online";
+export type SaleStatus = "completed" | "refunded" | "void";
 
 export interface SaleItem {
   id: string;

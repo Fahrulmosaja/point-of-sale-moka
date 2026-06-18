@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
-import { db } from '@/db/index';
-import { sales, saleItems, productMenus } from '@/db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { NextResponse } from "next/server";
+import { db } from "@/db/index";
+import { sales, saleItems, productMenus } from "@/db/schema";
+import { eq, desc } from "drizzle-orm";
 
 // Legacy /api/orders route — now reads from sales table
 export async function GET() {
@@ -37,7 +37,10 @@ export async function GET() {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Error fetching orders:', error);
-    return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 });
+    console.error("Error fetching orders:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch orders" },
+      { status: 500 },
+    );
   }
 }

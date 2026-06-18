@@ -1,14 +1,15 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ShoppingCart, TrendingUp, Wallet } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
-import { ShiftData } from '@/constants/shift.constant';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ShoppingCart, TrendingUp, Wallet } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
+import { ShiftData } from "@/constants/shift.constant";
 
 interface ShiftSummaryCardsProps {
   shift: ShiftData;
 }
 
 export function ShiftSummaryCards({ shift }: ShiftSummaryCardsProps) {
-  const cashTotal = shift.paymentBreakdown.find(p => p.method === 'Cash')?.amount || 0;
+  const cashTotal =
+    shift.paymentBreakdown.find((p) => p.method === "Cash")?.amount || 0;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -21,7 +22,9 @@ export function ShiftSummaryCards({ shift }: ShiftSummaryCardsProps) {
         </CardHeader>
         <CardContent>
           <div className="text-3xl font-bold">{shift.totalTransactions}</div>
-          <p className="text-xs text-muted-foreground mt-1">orders processed this shift</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            orders processed this shift
+          </p>
         </CardContent>
       </Card>
 
@@ -33,8 +36,12 @@ export function ShiftSummaryCards({ shift }: ShiftSummaryCardsProps) {
           <TrendingUp className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">{formatCurrency(shift.totalRevenue)}</div>
-          <p className="text-xs text-muted-foreground mt-1">gross revenue this shift</p>
+          <div className="text-3xl font-bold">
+            {formatCurrency(shift.totalRevenue)}
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            gross revenue this shift
+          </p>
         </CardContent>
       </Card>
 

@@ -1,14 +1,19 @@
-'use client';
+"use client";
 
-import { Sale } from '@/types/sale.types';
+import { Sale } from "@/types/sale.types";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Eye } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
-import { formatDate } from '@/lib/date-utils';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Eye } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
+import { formatDate } from "@/lib/date-utils";
 
 interface ActivityTableProps {
   sales: Sale[];
@@ -16,13 +21,21 @@ interface ActivityTableProps {
 }
 
 const statusVariantMap: Record<string, { label: string; className: string }> = {
-  completed: { label: 'Completed', className: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30' },
-  refunded:  { label: 'Refunded',  className: 'bg-destructive/15 text-destructive border-destructive/30' },
-  void:      { label: 'Void',      className: 'bg-muted text-muted-foreground' },
+  completed: {
+    label: "Completed",
+    className: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
+  },
+  refunded: {
+    label: "Refunded",
+    className: "bg-destructive/15 text-destructive border-destructive/30",
+  },
+  void: { label: "Void", className: "bg-muted text-muted-foreground" },
 };
 
 const typeMap: Record<string, string> = {
-  dine_in: 'Dine In', take_away: 'Take Away', online: 'Online',
+  dine_in: "Dine In",
+  take_away: "Take Away",
+  online: "Online",
 };
 
 export function ActivityTable({ sales, onViewDetail }: ActivityTableProps) {
@@ -43,27 +56,41 @@ export function ActivityTable({ sales, onViewDetail }: ActivityTableProps) {
         <TableBody>
           {sales.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+              <TableCell
+                colSpan={7}
+                className="h-24 text-center text-muted-foreground">
                 No transactions found.
               </TableCell>
             </TableRow>
           ) : (
             sales.map((sale) => {
-              const info = statusVariantMap[sale.status] ?? statusVariantMap.completed;
+              const info =
+                statusVariantMap[sale.status] ?? statusVariantMap.completed;
               return (
                 <TableRow key={sale.id}>
-                  <TableCell className="font-mono font-semibold">{sale.invoiceNumber}</TableCell>
-                  <TableCell className="text-muted-foreground">{formatDate(sale.date)}</TableCell>
+                  <TableCell className="font-mono font-semibold">
+                    {sale.invoiceNumber}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDate(sale.date)}
+                  </TableCell>
                   <TableCell>{typeMap[sale.type]}</TableCell>
                   <TableCell>{sale.paymentMethod}</TableCell>
-                  <TableCell className="font-semibold">{formatCurrency(sale.total)}</TableCell>
+                  <TableCell className="font-semibold">
+                    {formatCurrency(sale.total)}
+                  </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={`text-xs font-medium ${info.className}`}>
+                    <Badge
+                      variant="outline"
+                      className={`text-xs font-medium ${info.className}`}>
                       {info.label}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="icon" onClick={() => onViewDetail(sale)}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onViewDetail(sale)}>
                       <Eye className="h-4 w-4" />
                     </Button>
                   </TableCell>

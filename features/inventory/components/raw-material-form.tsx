@@ -1,20 +1,32 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { RawMaterial, CreateRawMaterialInput, Unit } from '@/types/raw-material.types';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from '@/components/ui/select';
+  RawMaterial,
+  CreateRawMaterialInput,
+  Unit,
+} from "@/types/raw-material.types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
-} from '@/components/ui/dialog';
-import { api } from '@/lib/api';
-import { toast } from 'sonner';
-import { useQueryClient } from '@tanstack/react-query';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface RawMaterialFormProps {
   open: boolean;
@@ -30,14 +42,30 @@ type FormValues = {
   minimumStock: number;
 };
 
-export function RawMaterialForm({ open, onClose, editItem }: RawMaterialFormProps) {
+export function RawMaterialForm({
+  open,
+  onClose,
+  editItem,
+}: RawMaterialFormProps) {
   const queryClient = useQueryClient();
   const isEditing = !!editItem;
 
-  const { register, handleSubmit, setValue, watch, reset, formState: { errors, isSubmitting } } =
-    useForm<FormValues>({
-      defaultValues: { name: '', category: '', unit: 'gr', currentStock: 0, minimumStock: 0 },
-    });
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<FormValues>({
+    defaultValues: {
+      name: "",
+      category: "",
+      unit: "gr",
+      currentStock: 0,
+      minimumStock: 0,
+    },
+  });
 
   useEffect(() => {
     if (editItem) {
@@ -49,45 +77,64 @@ export function RawMaterialForm({ open, onClose, editItem }: RawMaterialFormProp
         minimumStock: editItem.minimumStock,
       });
     } else {
-      reset({ name: '', category: '', unit: 'gr', currentStock: 0, minimumStock: 0 });
+      reset({
+        name: "",
+        category: "",
+        unit: "gr",
+        currentStock: 0,
+        minimumStock: 0,
+      });
     }
   }, [editItem, reset]);
 
-  const selectedUnit = watch('unit');
+  const selectedUnit = watch("unit");
 
   const onSubmit = async (values: FormValues) => {
     try {
       if (isEditing) {
         await api.put(`/raw-materials/${editItem.id}`, values);
-        toast.success('Raw material updated');
+        toast.success("Raw material updated");
       } else {
-        await api.post('/raw-materials', values);
-        toast.success('Raw material created');
+        await api.post("/raw-materials", values);
+        toast.success("Raw material created");
       }
-      queryClient.invalidateQueries({ queryKey: ['raw-materials'] });
+      queryClient.invalidateQueries({ queryKey: ["raw-materials"] });
       reset();
       onClose();
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Operation failed';
+      const message = err instanceof Error ? err.message : "Operation failed";
       toast.error(message);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { if (!v) { reset(); onClose(); } }}>
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        if (!v) {
+          reset();
+          onClose();
+        }
+      }}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{isEditing ? 'Edit Raw Material' : 'Add Raw Material'}</DialogTitle>
+          <DialogTitle>
+            {isEditing ? "Edit Raw Material" : "Add Raw Material"}
+          </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 py-2">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-4 py-2">
           <div className="grid gap-2">
             <Label htmlFor="rm-name">Name</Label>
             <Input
               id="rm-name"
               placeholder="e.g. Coffee Beans - House Blend"
-              {...register('name', { required: 'Name is required' })}
+              {...register("name", { required: "Name is required" })}
             />
-            {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
+            {errors.name && (
+              <p className="text-xs text-destructive">{errors.name.message}</p>
+            )}
           </div>
 
           <div className="grid gap-2">
@@ -95,17 +142,20 @@ export function RawMaterialForm({ open, onClose, editItem }: RawMaterialFormProp
             <Input
               id="rm-category"
               placeholder="e.g. Beans, Dairy, Syrup"
-              {...register('category', { required: 'Category is required' })}
+              {...register("category", { required: "Category is required" })}
             />
-            {errors.category && <p className="text-xs text-destructive">{errors.category.message}</p>}
+            {errors.category && (
+              <p className="text-xs text-destructive">
+                {errors.category.message}
+              </p>
+            )}
           </div>
 
           <div className="grid gap-2">
             <Label>Unit</Label>
             <Select
               value={selectedUnit}
-              onValueChange={(v) => setValue('unit', v as Unit)}
-            >
+              onValueChange={(v) => setValue("unit", v as Unit)}>
               <SelectTrigger id="rm-unit">
                 <SelectValue placeholder="Select unit" />
               </SelectTrigger>
@@ -125,10 +175,10 @@ export function RawMaterialForm({ open, onClose, editItem }: RawMaterialFormProp
                 type="number"
                 min="0"
                 step="0.01"
-                {...register('currentStock', {
+                {...register("currentStock", {
                   required: true,
                   valueAsNumber: true,
-                  min: { value: 0, message: 'Must be ≥ 0' },
+                  min: { value: 0, message: "Must be ≥ 0" },
                 })}
               />
             </div>
@@ -139,21 +189,27 @@ export function RawMaterialForm({ open, onClose, editItem }: RawMaterialFormProp
                 type="number"
                 min="0"
                 step="0.01"
-                {...register('minimumStock', {
+                {...register("minimumStock", {
                   required: true,
                   valueAsNumber: true,
-                  min: { value: 0, message: 'Must be ≥ 0' },
+                  min: { value: 0, message: "Must be ≥ 0" },
                 })}
               />
             </div>
           </div>
 
           <DialogFooter className="mt-2">
-            <Button type="button" variant="outline" onClick={() => { reset(); onClose(); }}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                reset();
+                onClose();
+              }}>
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Saving...' : isEditing ? 'Update' : 'Create'}
+              {isSubmitting ? "Saving..." : isEditing ? "Update" : "Create"}
             </Button>
           </DialogFooter>
         </form>

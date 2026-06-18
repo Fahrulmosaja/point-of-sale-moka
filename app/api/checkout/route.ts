@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/db/index';
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/db/index";
 import {
   sales,
   saleItems,
@@ -7,9 +7,9 @@ import {
   rawMaterials,
   productMenus,
   recipeIngredients,
-} from '@/db/schema';
-import { eq, sql } from 'drizzle-orm';
-import { CheckoutInput } from '@/types/sale.types';
+} from "@/db/schema";
+import { eq, sql } from "drizzle-orm";
+import { CheckoutInput } from "@/types/sale.types";
 
 function genId(prefix: string) {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -18,7 +18,7 @@ function genId(prefix: string) {
 let invoiceCounter = 100;
 function nextInvoice() {
   invoiceCounter += 1;
-  return `INV-${String(invoiceCounter).padStart(4, '0')}`;
+  return `INV-${String(invoiceCounter).padStart(4, "0")}`;
 }
 
 export async function POST(req: NextRequest) {
@@ -27,14 +27,17 @@ export async function POST(req: NextRequest) {
     const { orderType, paymentMethod, cashierName, items } = body;
 
     if (!items || items.length === 0) {
-      return NextResponse.json({ error: 'Cart is empty' }, { status: 400 });
+      return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
     }
 
-    const subtotal = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
+    const subtotal = items.reduce(
+      (sum, i) => sum + i.unitPrice * i.quantity,
+      0,
+    );
     const tax = Math.round(subtotal * 0.1);
     const total = subtotal + tax;
     const now = new Date();
-    const saleId = genId('sale');
+    const saleId = genId("sale");
     const invoiceNumber = nextInvoice();
 
     // ── Step 1: Create Sale ──────────────────────────────────────────────────
@@ -43,7 +46,7 @@ export async function POST(req: NextRequest) {
       invoiceNumber,
       date: now,
       type: orderType,
-      status: 'completed',
+      status: "completed",
       subtotal: String(subtotal),
       tax: String(tax),
       total: String(total),
@@ -55,7 +58,7 @@ export async function POST(req: NextRequest) {
     // ── Step 2: Create Sale Items ────────────────────────────────────────────
     for (const item of items) {
       await db.insert(saleItems).values({
-        id: genId('si'),
+        id: genId("si"),
         saleId,
         productMenuId: item.productMenuId,
         quantity: String(item.quantity),
@@ -87,11 +90,11 @@ export async function POST(req: NextRequest) {
 
         // Create OUT transaction
         await db.insert(inventoryTransactions).values({
-          id: genId('itx'),
+          id: genId("itx"),
           rawMaterialId: ing.rawMaterialId,
-          type: 'OUT',
+          type: "OUT",
           quantity: String(deductQty),
-          referenceType: 'SALE',
+          referenceType: "SALE",
           referenceId: saleId,
           notes: `Sale ${invoiceNumber}`,
           createdAt: now,
@@ -115,7 +118,7 @@ export async function POST(req: NextRequest) {
       total,
     });
   } catch (err) {
-    console.error('[POST /api/checkout]', err);
-    return NextResponse.json({ error: 'Checkout failed' }, { status: 500 });
+    console.error("[POST /api/checkout]", err);
+    return NextResponse.json({ error: "Checkout failed" }, { status: 500 });
   }
 }

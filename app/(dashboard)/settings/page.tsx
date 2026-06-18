@@ -1,5 +1,5 @@
-import { SettingsAppearance } from '@/features/settings/components/settings-appearance';
-import { Separator } from '@/components/ui/separator';
+import { SettingsAppearance } from "@/features/settings/components/settings-appearance";
+import { Separator } from "@/components/ui/separator";
 
 export default function SettingsPage() {
   return (

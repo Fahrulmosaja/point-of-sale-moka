@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { Product } from '../types/product.types';
+import { create } from "zustand";
+import { Product } from "../types/product.types";
 
 interface PosState {
   products: Product[];
@@ -16,7 +16,7 @@ interface PosState {
 export const usePosStore = create<PosState>((set, get) => ({
   products: [],
   isLoading: false,
-  searchQuery: '',
+  searchQuery: "",
   selectedCategory: null,
   favorites: [],
 
@@ -33,7 +33,7 @@ export const usePosStore = create<PosState>((set, get) => ({
   fetchProducts: async () => {
     set({ isLoading: true });
     try {
-      const res = await fetch('/api/product-menus?active=true');
+      const res = await fetch("/api/product-menus?active=true");
       if (res.ok) {
         const data: Product[] = await res.json();
         set({
@@ -42,7 +42,7 @@ export const usePosStore = create<PosState>((set, get) => ({
         });
       }
     } catch (err) {
-      console.error('Failed to fetch products', err);
+      console.error("Failed to fetch products", err);
     } finally {
       set({ isLoading: false });
     }

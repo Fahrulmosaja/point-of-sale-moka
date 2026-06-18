@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { CreditCard } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
-import { ShiftData } from '@/constants/shift.constant';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { CreditCard } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
+import { ShiftData } from "@/constants/shift.constant";
 
 interface ShiftPaymentBreakdownProps {
   shift: ShiftData;
@@ -28,7 +28,9 @@ export function ShiftPaymentBreakdown({ shift }: ShiftPaymentBreakdownProps) {
                   {item.count} orders
                 </Badge>
               </div>
-              <span className="text-sm font-semibold">{formatCurrency(item.amount)}</span>
+              <span className="text-sm font-semibold">
+                {formatCurrency(item.amount)}
+              </span>
             </div>
             {idx < shift.paymentBreakdown.length - 1 && <Separator />}
           </div>
@@ -36,7 +38,9 @@ export function ShiftPaymentBreakdown({ shift }: ShiftPaymentBreakdownProps) {
         <Separator className="mt-1 mb-3" />
         <div className="flex items-center justify-between">
           <span className="text-sm font-bold">Total</span>
-          <span className="text-sm font-bold">{formatCurrency(shift.totalRevenue)}</span>
+          <span className="text-sm font-bold">
+            {formatCurrency(shift.totalRevenue)}
+          </span>
         </div>
       </CardContent>
     </Card>

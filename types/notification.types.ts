@@ -1,4 +1,4 @@
-export type NotificationType = 'low_stock' | 'out_of_stock' | 'info';
+export type NotificationType = "low_stock" | "out_of_stock" | "info";
 
 export interface AppNotification {
   id: string;

@@ -1,9 +1,9 @@
-import 'dotenv/config';
-import { db } from './index';
-import { sql } from 'drizzle-orm';
+import "dotenv/config";
+import { db } from "./index";
+import { sql } from "drizzle-orm";
 
 async function migrate() {
-  console.log('🔧 Running migration...');
+  console.log("🔧 Running migration...");
 
   // Drop old tables (cascade clears FKs automatically)
   await db.execute(sql`DROP TABLE IF EXISTS order_items CASCADE`);
@@ -19,8 +19,12 @@ async function migrate() {
 
   // Create enums
   await db.execute(sql`CREATE TYPE unit AS ENUM ('gr', 'ml', 'pcs')`);
-  await db.execute(sql`CREATE TYPE inventory_tx_type AS ENUM ('IN', 'OUT', 'ADJUSTMENT', 'REFUND', 'VOID')`);
-  await db.execute(sql`CREATE TYPE order_type AS ENUM ('dine_in', 'take_away', 'online')`);
+  await db.execute(
+    sql`CREATE TYPE inventory_tx_type AS ENUM ('IN', 'OUT', 'ADJUSTMENT', 'REFUND', 'VOID')`,
+  );
+  await db.execute(
+    sql`CREATE TYPE order_type AS ENUM ('dine_in', 'take_away', 'online')`,
+  );
 
   // raw_materials
   await db.execute(sql`
@@ -119,10 +123,10 @@ async function migrate() {
     )
   `);
 
-  console.log('✅ Migration complete!');
+  console.log("✅ Migration complete!");
 }
 
 migrate().catch((err) => {
-  console.error('❌ Migration failed:', err);
+  console.error("❌ Migration failed:", err);
   process.exit(1);
 });

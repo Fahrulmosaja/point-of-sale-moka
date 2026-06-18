@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { Sale } from '../types/sale.types';
-import { api } from '../lib/api';
+import { create } from "zustand";
+import { Sale } from "../types/sale.types";
+import { api } from "../lib/api";
 
 interface SalesState {
   sales: Sale[];
@@ -15,10 +15,10 @@ export const useSalesStore = create<SalesState>((set) => ({
   fetchSales: async () => {
     set({ isLoading: true });
     try {
-      const { data } = await api.get('/sales');
+      const { data } = await api.get("/sales");
       set({ sales: data });
     } catch (err) {
-      console.error('Failed to fetch sales:', err);
+      console.error("Failed to fetch sales:", err);
     } finally {
       set({ isLoading: false });
     }

@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { usePathname } from 'next/navigation';
-import { NAVIGATION } from '@/constants/navigation.constant';
-import { Input } from '@/components/ui/input';
-import { Search, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { usePosStore } from '@/stores/pos-store';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { LowStockNotification } from '@/components/low-stock-notification';
+import { usePathname } from "next/navigation";
+import { NAVIGATION } from "@/constants/navigation.constant";
+import { Input } from "@/components/ui/input";
+import { Search, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { usePosStore } from "@/stores/pos-store";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { LowStockNotification } from "@/components/low-stock-notification";
 
 export function Header() {
   const pathname = usePathname();
-  const isPosPage = pathname.startsWith('/point-of-sale');
+  const isPosPage = pathname.startsWith("/point-of-sale");
 
-  const currentNav = NAVIGATION.find(nav => pathname.startsWith(nav.href));
-  const pageTitle = currentNav ? currentNav.name : 'BrewFlow POS';
+  const currentNav = NAVIGATION.find((nav) => pathname.startsWith(nav.href));
+  const pageTitle = currentNav ? currentNav.name : "BrewFlow POS";
 
   const { searchQuery, setSearchQuery } = usePosStore();
 

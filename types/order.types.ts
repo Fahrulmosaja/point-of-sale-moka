@@ -1,7 +1,7 @@
-import { Product } from './product.types';
+import { Product } from "./product.types";
 
-export type OrderType = 'dine_in' | 'take_away' | 'online';
-export type OrderStatus = 'completed' | 'refunded' | 'cancelled' | 'pending';
+export type OrderType = "dine_in" | "take_away" | "online";
+export type OrderStatus = "completed" | "refunded" | "cancelled" | "pending";
 
 export interface OrderItem {
   id: string;

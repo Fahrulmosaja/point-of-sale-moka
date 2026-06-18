@@ -1,25 +1,27 @@
-import { useCartStore } from '@/stores/cart-store';
-import { usePosStore } from '@/stores/pos-store';
-import { Product } from '@/types/product.types';
-import { api } from '@/lib/api';
-import { toast } from 'sonner';
+import { useCartStore } from "@/stores/cart-store";
+import { usePosStore } from "@/stores/pos-store";
+import { Product } from "@/types/product.types";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
 
 export function useCartOperations() {
   const { items, orderType, addItem, clearCart } = useCartStore();
   const fetchProducts = usePosStore((state) => state.fetchProducts);
 
   const handleAddItem = (product: Product, quantity = 1, notes?: string) => {
-    if (product.stockStatus === 'out_of_stock') {
+    if (product.stockStatus === "out_of_stock") {
       toast.error(`${product.name} is out of stock!`);
       return;
     }
 
-    if (product.stockStatus === 'low_stock') {
+    if (product.stockStatus === "low_stock") {
       toast.warning(`${product.name} is running low!`, {
-        description: `Only ${product.availableStock} serving${product.availableStock !== 1 ? 's' : ''} remaining.`,
+        description: `Only ${product.availableStock} serving${product.availableStock !== 1 ? "s" : ""} remaining.`,
         action: {
-          label: 'Check Inventory',
-          onClick: () => { window.location.href = '/inventory'; },
+          label: "Check Inventory",
+          onClick: () => {
+            window.location.href = "/inventory";
+          },
         },
       });
     }
@@ -31,10 +33,10 @@ export function useCartOperations() {
     if (items.length === 0) return;
 
     try {
-      const response = await api.post('/checkout', {
+      const response = await api.post("/checkout", {
         orderType,
         paymentMethod,
-        cashierName: 'Jane Doe',
+        cashierName: "Jane Doe",
         items: items.map((item) => ({
           productMenuId: item.productMenuId,
           quantity: item.quantity,
@@ -45,9 +47,9 @@ export function useCartOperations() {
 
       const { invoiceNumber, total } = response.data;
 
-      const formatted = new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
+      const formatted = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
         minimumFractionDigits: 0,
       }).format(total);
 
@@ -60,8 +62,8 @@ export function useCartOperations() {
       // Refresh POS product list so stock counts update immediately
       await fetchProducts();
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Checkout failed';
-      toast.error('Checkout failed', { description: message });
+      const message = err instanceof Error ? err.message : "Checkout failed";
+      toast.error("Checkout failed", { description: message });
     }
   };
 

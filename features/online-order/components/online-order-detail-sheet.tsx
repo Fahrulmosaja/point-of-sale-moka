@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { Order, OrderStatus } from '@/types/order.types';
+import { Order, OrderStatus } from "@/types/order.types";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from '@/components/ui/sheet';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { cn, formatCurrency } from '@/lib/utils';
-import { formatDateTime } from '@/lib/date-utils';
+} from "@/components/ui/sheet";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { cn, formatCurrency } from "@/lib/utils";
+import { formatDateTime } from "@/lib/date-utils";
 
 interface OnlineOrderDetailSheetProps {
   order: Order | null;
@@ -19,18 +19,31 @@ interface OnlineOrderDetailSheetProps {
   onClose: () => void;
 }
 
-const STATUS_CONFIG: Record<OrderStatus, { label: string; className: string }> = {
-  pending: { label: 'Pending', className: 'bg-amber-500/15 text-amber-500 border-amber-500/30' },
-  completed: { label: 'Completed', className: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30' },
-  cancelled: { label: 'Cancelled', className: 'bg-destructive/15 text-destructive border-destructive/30' },
-  refunded: { label: 'Refunded', className: 'bg-muted text-muted-foreground border-border' },
-};
+const STATUS_CONFIG: Record<OrderStatus, { label: string; className: string }> =
+  {
+    pending: {
+      label: "Pending",
+      className: "bg-amber-500/15 text-amber-500 border-amber-500/30",
+    },
+    completed: {
+      label: "Completed",
+      className: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
+    },
+    cancelled: {
+      label: "Cancelled",
+      className: "bg-destructive/15 text-destructive border-destructive/30",
+    },
+    refunded: {
+      label: "Refunded",
+      className: "bg-muted text-muted-foreground border-border",
+    },
+  };
 
-
-
-
-
-export function OnlineOrderDetailSheet({ order, open, onClose }: OnlineOrderDetailSheetProps) {
+export function OnlineOrderDetailSheet({
+  order,
+  open,
+  onClose,
+}: OnlineOrderDetailSheetProps) {
   if (!order) return null;
 
   const statusConfig = STATUS_CONFIG[order.status];
@@ -41,8 +54,12 @@ export function OnlineOrderDetailSheet({ order, open, onClose }: OnlineOrderDeta
         {/* Header */}
         <SheetHeader className="p-6 pb-4 border-b">
           <div className="flex items-center justify-between">
-            <SheetTitle className="text-lg font-semibold">{order.invoiceNumber}</SheetTitle>
-            <Badge variant="outline" className={cn('text-xs font-medium', statusConfig.className)}>
+            <SheetTitle className="text-lg font-semibold">
+              {order.invoiceNumber}
+            </SheetTitle>
+            <Badge
+              variant="outline"
+              className={cn("text-xs font-medium", statusConfig.className)}>
               {statusConfig.label}
             </Badge>
           </div>
@@ -60,12 +77,16 @@ export function OnlineOrderDetailSheet({ order, open, onClose }: OnlineOrderDeta
             </h3>
             <div className="flex flex-col gap-3">
               {order.items.map((item) => (
-                <div key={item.id} className="flex items-center justify-between gap-4">
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3 min-w-0">
                     <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-muted text-xs font-bold shrink-0">
                       {item.quantity}
                     </span>
-                    <span className="text-sm truncate">{item.product?.name ?? 'Unknown Item'}</span>
+                    <span className="text-sm truncate">
+                      {item.product?.name ?? "Unknown Item"}
+                    </span>
                   </div>
                   <span className="text-sm font-medium shrink-0">
                     {formatCurrency(item.price * item.quantity)}

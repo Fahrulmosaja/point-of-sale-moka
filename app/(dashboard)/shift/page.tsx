@@ -1,4 +1,4 @@
-import { ShiftOverview } from '@/features/shift/components/shift-overview';
+import { ShiftOverview } from "@/features/shift/components/shift-overview";
 
 export default function ShiftPage() {
   return (

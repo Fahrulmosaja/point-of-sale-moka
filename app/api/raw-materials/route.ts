@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/db/index';
-import { rawMaterials, recipeIngredients, productMenus } from '@/db/schema';
-import { eq, isNull } from 'drizzle-orm';
-import { getRawMaterialStatus } from '@/lib/stock-calculator';
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/db/index";
+import { rawMaterials, recipeIngredients, productMenus } from "@/db/schema";
+import { eq, isNull } from "drizzle-orm";
+import { getRawMaterialStatus } from "@/lib/stock-calculator";
 
 function nanoidId() {
   return `rm-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -25,7 +25,11 @@ export async function GET() {
       .from(recipeIngredients);
 
     const allProducts = await db
-      .select({ id: productMenus.id, name: productMenus.name, recipeId: productMenus.recipeId })
+      .select({
+        id: productMenus.id,
+        name: productMenus.name,
+        recipeId: productMenus.recipeId,
+      })
       .from(productMenus)
       .where(isNull(productMenus.deletedAt));
 
@@ -53,8 +57,11 @@ export async function GET() {
 
     return NextResponse.json(result);
   } catch (err) {
-    console.error('[GET /api/raw-materials]', err);
-    return NextResponse.json({ error: 'Failed to fetch raw materials' }, { status: 500 });
+    console.error("[GET /api/raw-materials]", err);
+    return NextResponse.json(
+      { error: "Failed to fetch raw materials" },
+      { status: 500 },
+    );
   }
 }
 
@@ -63,8 +70,17 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { name, category, unit, currentStock, minimumStock } = body;
 
-    if (!name || !category || !unit || currentStock === undefined || minimumStock === undefined) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    if (
+      !name ||
+      !category ||
+      !unit ||
+      currentStock === undefined ||
+      minimumStock === undefined
+    ) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 },
+      );
     }
 
     const id = nanoidId();
@@ -84,7 +100,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ id }, { status: 201 });
   } catch (err) {
-    console.error('[POST /api/raw-materials]', err);
-    return NextResponse.json({ error: 'Failed to create raw material' }, { status: 500 });
+    console.error("[POST /api/raw-materials]", err);
+    return NextResponse.json(
+      { error: "Failed to create raw material" },
+      { status: 500 },
+    );
   }
 }
