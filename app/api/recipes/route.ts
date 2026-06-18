@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db/index";
 import { recipes, recipeIngredients, rawMaterials } from "@/db/schema";
-import { eq, isNull } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 function genId() {
   return `rec-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;

@@ -59,7 +59,7 @@ export function OnlineOrderList() {
       if (b.status === "pending" && a.status !== "pending") return 1;
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
-  }, [activeFilter, searchQuery]);
+  }, [activeFilter, searchQuery, onlineOrders]);
 
   const handleViewDetail = (order: Order) => {
     setSelectedOrder(order);

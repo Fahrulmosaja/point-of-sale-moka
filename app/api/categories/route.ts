@@ -15,7 +15,7 @@ export async function GET() {
       new Set(products.map((p) => p.category)),
     )
       .sort()
-      .map((name, i) => ({ id: name, name }));
+      .map((name) => ({ id: name, name }));
 
     return NextResponse.json(uniqueCategories);
   } catch (error) {

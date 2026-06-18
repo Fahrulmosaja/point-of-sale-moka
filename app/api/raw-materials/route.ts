@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db/index";
 import { rawMaterials, recipeIngredients, productMenus } from "@/db/schema";
-import { eq, isNull } from "drizzle-orm";
+import { isNull } from "drizzle-orm";
 import { getRawMaterialStatus } from "@/lib/stock-calculator";
 
 function nanoidId() {

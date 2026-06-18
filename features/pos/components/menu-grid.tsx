@@ -1,22 +1,18 @@
 "use client";
 
 import { usePosStore } from "@/stores/pos-store";
+import { useProducts } from "../hooks/use-products";
 import { MenuCard } from "./menu-card";
-import { useMemo, useEffect } from "react";
+import { useMemo } from "react";
 
 export function MenuGrid() {
   const {
-    products,
     searchQuery,
     selectedCategory,
     favorites,
-    fetchProducts,
-    isLoading,
   } = usePosStore();
 
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  const { data: products = [], isLoading } = useProducts();
 
   const filteredProducts = useMemo(() => {
     let filtered = [...products];

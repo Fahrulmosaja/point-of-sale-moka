@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   RawMaterial,
-  CreateRawMaterialInput,
   Unit,
 } from "@/types/raw-material.types";
 import { Button } from "@/components/ui/button";

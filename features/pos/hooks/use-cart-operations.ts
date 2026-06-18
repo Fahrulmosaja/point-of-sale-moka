@@ -1,12 +1,13 @@
 import { useCartStore } from "@/stores/cart-store";
-import { usePosStore } from "@/stores/pos-store";
 import { Product } from "@/types/product.types";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 
+import { useQueryClient } from "@tanstack/react-query";
+
 export function useCartOperations() {
   const { items, orderType, addItem, clearCart } = useCartStore();
-  const fetchProducts = usePosStore((state) => state.fetchProducts);
+  const queryClient = useQueryClient();
 
   const handleAddItem = (product: Product, quantity = 1, notes?: string) => {
     if (product.stockStatus === "out_of_stock") {
@@ -60,7 +61,7 @@ export function useCartOperations() {
       clearCart();
 
       // Refresh POS product list so stock counts update immediately
-      await fetchProducts();
+      queryClient.invalidateQueries({ queryKey: ["product-menus"] });
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Checkout failed";
       toast.error("Checkout failed", { description: message });
