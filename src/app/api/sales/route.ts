@@ -1,45 +1,8 @@
 import { NextResponse } from "next/server";
-import { db } from "@/db/index";
-import { sales, saleItems, productMenus } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { SalesService } from "@/features/sales/service";
+import { withErrorHandler } from "@/lib/api-handler";
 
-export async function GET() {
-  try {
-    const allSales = await db.select().from(sales).orderBy(desc(sales.date));
-
-    const allItems = await db
-      .select({
-        id: saleItems.id,
-        saleId: saleItems.saleId,
-        productMenuId: saleItems.productMenuId,
-        productMenuName: productMenus.name,
-        quantity: saleItems.quantity,
-        unitPrice: saleItems.unitPrice,
-        notes: saleItems.notes,
-      })
-      .from(saleItems)
-      .innerJoin(productMenus, eq(saleItems.productMenuId, productMenus.id));
-
-    const result = allSales.map((sale) => ({
-      ...sale,
-      subtotal: parseFloat(sale.subtotal),
-      tax: parseFloat(sale.tax),
-      total: parseFloat(sale.total),
-      items: allItems
-        .filter((i) => i.saleId === sale.id)
-        .map((i) => ({
-          ...i,
-          quantity: parseFloat(i.quantity),
-          unitPrice: parseFloat(i.unitPrice),
-        })),
-    }));
-
-    return NextResponse.json(result);
-  } catch (err) {
-    console.error("[GET /api/sales]", err);
-    return NextResponse.json(
-      { error: "Failed to fetch sales" },
-      { status: 500 },
-    );
-  }
-}
+export const GET = withErrorHandler(async () => {
+  const result = await SalesService.getSales();
+  return NextResponse.json(result);
+});
