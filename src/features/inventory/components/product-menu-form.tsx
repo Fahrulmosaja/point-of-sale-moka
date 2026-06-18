@@ -1,12 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import {
-  ProductMenu,
-  CreateProductMenuInput,
-} from "@/types/product-menu.types";
-import { Recipe } from "@/types/recipe.types";
+import { ProductMenu } from "@/types/product-menu.types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,24 +18,13 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { api } from "@/lib/api";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
+import { useProductMenuForm } from "../hooks/use-product-menu-form";
 
 interface ProductMenuFormProps {
   open: boolean;
   onClose: () => void;
   editItem?: ProductMenu | null;
 }
-
-type FormValues = {
-  name: string;
-  category: string;
-  price: number;
-  recipeId: string;
-  imageUrl?: string;
-  isActive: boolean;
-};
 
 const CATEGORIES = [
   "Espresso Based",
@@ -57,88 +40,18 @@ export function ProductMenuForm({
   onClose,
   editItem,
 }: ProductMenuFormProps) {
-  const queryClient = useQueryClient();
-  const isEditing = !!editItem;
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
+    selectedRecipeId,
+    selectedCategory,
+    errors,
+    isSubmitting,
     reset,
-    formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
-    defaultValues: {
-      name: "",
-      category: "",
-      price: 0,
-      recipeId: "",
-      imageUrl: "",
-      isActive: true,
-    },
-  });
-
-  useEffect(() => {
-    if (editItem) {
-      reset({
-        name: editItem.name,
-        category: editItem.category,
-        price: editItem.price,
-        recipeId: editItem.recipeId,
-        imageUrl: editItem.imageUrl ?? "",
-        isActive: editItem.isActive,
-      });
-    } else {
-      reset({
-        name: "",
-        category: "",
-        price: 0,
-        recipeId: "",
-        imageUrl: "",
-        isActive: true,
-      });
-    }
-  }, [editItem, reset]);
-
-  const selectedRecipeId = watch("recipeId");
-  const selectedCategory = watch("category");
-
-  useEffect(() => {
-    api
-      .get("/recipes")
-      .then((r) => setRecipes(r.data))
-      .catch(console.error);
-  }, []);
-
-  const onSubmit = async (values: FormValues) => {
-    if (!values.recipeId) {
-      toast.error("Please select a recipe");
-      return;
-    }
-    try {
-      const payload: CreateProductMenuInput = {
-        name: values.name,
-        category: values.category,
-        price: values.price,
-        recipeId: values.recipeId,
-        imageUrl: values.imageUrl || undefined,
-        isActive: values.isActive,
-      };
-      if (isEditing) {
-        await api.put(`/product-menus/${editItem.id}`, payload);
-        toast.success("Product menu updated");
-      } else {
-        await api.post("/product-menus", payload);
-        toast.success("Product menu created");
-      }
-      queryClient.invalidateQueries({ queryKey: ["product-menus"] });
-      reset();
-      onClose();
-    } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : "Operation failed");
-    }
-  };
+    isEditing,
+    recipes,
+  } = useProductMenuForm({ editItem, onClose });
 
   return (
     <Dialog
@@ -156,7 +69,7 @@ export function ProductMenuForm({
           </DialogTitle>
         </DialogHeader>
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit}
           className="flex flex-col gap-4 py-2">
           <div className="grid gap-2">
             <Label htmlFor="pm-name">Product Name</Label>

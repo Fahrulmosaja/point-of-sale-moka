@@ -131,7 +131,7 @@ export const ProductMenuService = {
       deletedAt: new Date(),
       updatedAt: new Date(),
     }).where(eq(productMenus.id, id));
-    
+
     return { success: true };
   }
 };

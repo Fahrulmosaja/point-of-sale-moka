@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
 import {
   RawMaterial,
   Unit,
@@ -23,9 +21,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { api } from "@/lib/api";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
+import { useRawMaterialForm } from "../hooks/use-raw-material-form";
 
 interface RawMaterialFormProps {
   open: boolean;
@@ -33,79 +29,21 @@ interface RawMaterialFormProps {
   editItem?: RawMaterial | null;
 }
 
-type FormValues = {
-  name: string;
-  category: string;
-  unit: Unit;
-  currentStock: number;
-  minimumStock: number;
-};
-
 export function RawMaterialForm({
   open,
   onClose,
   editItem,
 }: RawMaterialFormProps) {
-  const queryClient = useQueryClient();
-  const isEditing = !!editItem;
-
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
+    selectedUnit,
+    errors,
+    isSubmitting,
     reset,
-    formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
-    defaultValues: {
-      name: "",
-      category: "",
-      unit: "gr",
-      currentStock: 0,
-      minimumStock: 0,
-    },
-  });
-
-  useEffect(() => {
-    if (editItem) {
-      reset({
-        name: editItem.name,
-        category: editItem.category,
-        unit: editItem.unit,
-        currentStock: editItem.currentStock,
-        minimumStock: editItem.minimumStock,
-      });
-    } else {
-      reset({
-        name: "",
-        category: "",
-        unit: "gr",
-        currentStock: 0,
-        minimumStock: 0,
-      });
-    }
-  }, [editItem, reset]);
-
-  const selectedUnit = watch("unit");
-
-  const onSubmit = async (values: FormValues) => {
-    try {
-      if (isEditing) {
-        await api.put(`/raw-materials/${editItem.id}`, values);
-        toast.success("Raw material updated");
-      } else {
-        await api.post("/raw-materials", values);
-        toast.success("Raw material created");
-      }
-      queryClient.invalidateQueries({ queryKey: ["raw-materials"] });
-      queryClient.invalidateQueries({ queryKey: ["product-menus"] });
-      reset();
-      onClose();
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Operation failed";
-      toast.error(message);
-    }
-  };
+    isEditing,
+  } = useRawMaterialForm({ editItem, onClose });
 
   return (
     <Dialog
@@ -123,7 +61,7 @@ export function RawMaterialForm({
           </DialogTitle>
         </DialogHeader>
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit}
           className="flex flex-col gap-4 py-2">
           <div className="grid gap-2">
             <Label htmlFor="rm-name">Name</Label>

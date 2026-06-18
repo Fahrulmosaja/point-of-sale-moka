@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { ProductMenuService } from '@/features/inventory/api/product-menu-sevices';
+import { ProductMenuService } from '@/features/inventory/api/product-menu-service';
 import { withErrorHandler } from '@/lib/api-handler';
 
 export const PUT = withErrorHandler(async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
