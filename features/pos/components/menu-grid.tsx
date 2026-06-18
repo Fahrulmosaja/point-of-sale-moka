@@ -1,18 +1,22 @@
 'use client';
 
 import { usePosStore } from '@/stores/pos-store';
-import { PRODUCTS } from '@/constants/products.constant';
 import { MenuCard } from './menu-card';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 
 export function MenuGrid() {
-  const { searchQuery, selectedCategoryId, favorites } = usePosStore();
+  const { products, searchQuery, selectedCategory, favorites, fetchProducts, isLoading } =
+    usePosStore();
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const filteredProducts = useMemo(() => {
-    let filtered = PRODUCTS;
+    let filtered = [...products];
 
-    if (selectedCategoryId) {
-      filtered = filtered.filter((p) => p.categoryId === selectedCategoryId);
+    if (selectedCategory) {
+      filtered = filtered.filter((p) => p.category === selectedCategory);
     }
 
     if (searchQuery) {
@@ -20,15 +24,26 @@ export function MenuGrid() {
       filtered = filtered.filter((p) => p.name.toLowerCase().includes(lowerQuery));
     }
 
-    // Sort: Favorites first
+    // Sort: Favorites first, then by name
     filtered.sort((a, b) => {
       const aFav = favorites.includes(a.id) ? 1 : 0;
       const bFav = favorites.includes(b.id) ? 1 : 0;
-      return bFav - aFav;
+      if (bFav !== aFav) return bFav - aFav;
+      return a.name.localeCompare(b.name);
     });
 
     return filtered;
-  }, [searchQuery, selectedCategoryId, favorites]);
+  }, [products, searchQuery, selectedCategory, favorites]);
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <div key={i} className="rounded-lg bg-muted animate-pulse aspect-[3/4]" />
+        ))}
+      </div>
+    );
+  }
 
   if (filteredProducts.length === 0) {
     return (

@@ -1,31 +1,37 @@
 'use client';
 
-import { CATEGORIES } from '@/constants/categories.constant';
 import { usePosStore } from '@/stores/pos-store';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
+import { useMemo } from 'react';
 
 export function CategoryFilter() {
-  const { selectedCategoryId, setSelectedCategoryId } = usePosStore();
+  const { products, selectedCategory, setSelectedCategory } = usePosStore();
+
+  // Derive unique categories from loaded products
+  const categories = useMemo(() => {
+    const cats = Array.from(new Set(products.map((p) => p.category))).sort();
+    return cats;
+  }, [products]);
 
   return (
     <ScrollArea className="w-full whitespace-nowrap rounded-md border bg-card">
       <div className="flex w-max space-x-2 p-2">
         <Button
-          variant={selectedCategoryId === null ? 'default' : 'ghost'}
-          onClick={() => setSelectedCategoryId(null)}
+          variant={selectedCategory === null ? 'default' : 'ghost'}
+          onClick={() => setSelectedCategory(null)}
           className="rounded-full"
         >
           All
         </Button>
-        {CATEGORIES.map((category) => (
+        {categories.map((category) => (
           <Button
-            key={category.id}
-            variant={selectedCategoryId === category.id ? 'default' : 'ghost'}
-            onClick={() => setSelectedCategoryId(category.id)}
+            key={category}
+            variant={selectedCategory === category ? 'default' : 'ghost'}
+            onClick={() => setSelectedCategory(category)}
             className="rounded-full"
           >
-            {category.name}
+            {category}
           </Button>
         ))}
       </div>

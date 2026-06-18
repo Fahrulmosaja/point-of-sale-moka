@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryProvider } from "@/components/query-provider";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,17 +35,19 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <TooltipProvider>
-            {children}
-            <Toaster />
-          </TooltipProvider>
+          <QueryProvider>
+            <TooltipProvider>
+              {children}
+              <Toaster />
+            </TooltipProvider>
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>

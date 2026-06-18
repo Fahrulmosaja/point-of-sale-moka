@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 import { InventoryItem, StockStatus } from '../types/inventory.types';
-import { INVENTORY } from '../constants/inventory.constant';
 
 interface InventoryState {
   items: InventoryItem[];
+  isLoading: boolean;
   deductStock: (productName: string, quantity: number) => void;
   getLowStockItems: () => InventoryItem[];
   getAlertCount: () => number;
+  fetchInventory: () => Promise<void>;
 }
 
 function computeStatus(stock: number, minStock: number): StockStatus {
@@ -61,7 +62,8 @@ export function calculateDeductedInventory(items: InventoryItem[], productName: 
 }
 
 export const useInventoryStore = create<InventoryState>((set, get) => ({
-  items: INVENTORY,
+  items: [],
+  isLoading: false,
 
   deductStock: (productName, quantity) =>
     set((state) => ({
@@ -79,4 +81,19 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       (item) => item.status === 'low_stock' || item.status === 'out_of_stock'
     ).length;
   },
+
+  fetchInventory: async () => {
+    set({ isLoading: true });
+    try {
+      const res = await fetch('/api/inventory');
+      if (res.ok) {
+        const data = await res.json();
+        set({ items: data });
+      }
+    } catch (error) {
+      console.error('Failed to fetch inventory', error);
+    } finally {
+      set({ isLoading: false });
+    }
+  }
 }));

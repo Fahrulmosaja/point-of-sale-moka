@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Order, OrderStatus } from '@/types/order.types';
-import { ORDERS } from '@/constants/orders.constant';
+import { useOrdersStore } from '@/stores/orders-store';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import { OnlineOrderFilters } from './online-order-filters';
@@ -11,26 +11,31 @@ import { OnlineOrderDetailSheet } from './online-order-detail-sheet';
 
 type FilterValue = 'all' | OrderStatus;
 
-const ONLINE_ORDERS = ORDERS.filter((o) => o.type === 'online');
-
 export function OnlineOrderList() {
+  const { orders, fetchOrders, isLoading } = useOrdersStore();
   const [activeFilter, setActiveFilter] = useState<FilterValue>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
 
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  const onlineOrders = useMemo(() => orders.filter((o) => o.type === 'online'), [orders]);
+
   const counts = useMemo<Record<FilterValue, number>>(() => {
     return {
-      all: ONLINE_ORDERS.length,
-      pending: ONLINE_ORDERS.filter((o) => o.status === 'pending').length,
-      completed: ONLINE_ORDERS.filter((o) => o.status === 'completed').length,
-      cancelled: ONLINE_ORDERS.filter((o) => o.status === 'cancelled').length,
-      refunded: ONLINE_ORDERS.filter((o) => o.status === 'refunded').length,
+      all: onlineOrders.length,
+      pending: onlineOrders.filter((o) => o.status === 'pending').length,
+      completed: onlineOrders.filter((o) => o.status === 'completed').length,
+      cancelled: onlineOrders.filter((o) => o.status === 'cancelled').length,
+      refunded: onlineOrders.filter((o) => o.status === 'refunded').length,
     };
-  }, []);
+  }, [onlineOrders]);
 
   const filteredOrders = useMemo(() => {
-    let result = ONLINE_ORDERS;
+    let result = onlineOrders;
 
     if (activeFilter !== 'all') {
       result = result.filter((o) => o.status === activeFilter);
@@ -80,7 +85,11 @@ export function OnlineOrderList() {
       </div>
 
       {/* Grid */}
-      {filteredOrders.length > 0 ? (
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center py-20 text-center gap-3">
+          <p className="text-sm text-muted-foreground">Loading online orders...</p>
+        </div>
+      ) : filteredOrders.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredOrders.map((order) => (
             <OnlineOrderCard
