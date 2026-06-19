@@ -17,12 +17,6 @@
 /.next/
 /out/
 
-# prd
-/prd.md
-/final.md
-/design.md
-
-
 # production
 /build
 
