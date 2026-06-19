@@ -1,6 +1,8 @@
 "use client";
 
 import { ProductMenu } from "@/types/product-menu.types";
+import { formatDate } from "@/lib/date-utils";
+import { formatCurrency } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -10,16 +12,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  AlertTriangle,
-  AlertCircle,
-  CheckCircle2,
-  Pencil,
-  Trash2,
-} from "lucide-react";
-import { formatDate } from "@/lib/date-utils";
-import { formatCurrency } from "@/lib/utils";
+import { InventoryStatusBadge } from "./inventory-status-badge";
+import { InventoryTableActions } from "./inventory-table-actions";
 
 interface ProductMenuTableProps {
   items: ProductMenu[];
@@ -27,38 +21,7 @@ interface ProductMenuTableProps {
   onDelete?: (item: ProductMenu) => void;
 }
 
-function StockBadge({ status }: { status: ProductMenu["stockStatus"] }) {
-  switch (status) {
-    case "out_of_stock":
-      return (
-        <Badge
-          variant="destructive"
-          className="gap-1.5 flex items-center w-fit">
-          <AlertCircle className="h-3.5 w-3.5" /> Out of Stock
-        </Badge>
-      );
-    case "low_stock":
-      return (
-        <Badge
-          variant="outline"
-          className="gap-1.5 border-amber-500 text-amber-500 flex items-center w-fit">
-          <AlertTriangle className="h-3.5 w-3.5" /> Low Stock
-        </Badge>
-      );
-    case "healthy":
-      return (
-        <Badge variant="secondary" className="gap-1.5 flex items-center w-fit">
-          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> Healthy
-        </Badge>
-      );
-  }
-}
-
-export function ProductMenuTable({
-  items,
-  onEdit,
-  onDelete,
-}: ProductMenuTableProps) {
+export function ProductMenuTable({ items, onEdit, onDelete }: ProductMenuTableProps) {
   return (
     <div className="rounded-md border bg-card">
       <Table>
@@ -77,9 +40,7 @@ export function ProductMenuTable({
         <TableBody>
           {items.length === 0 ? (
             <TableRow>
-              <TableCell
-                colSpan={8}
-                className="h-24 text-center text-muted-foreground">
+              <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
                 No product menus found.
               </TableCell>
             </TableRow>
@@ -89,9 +50,7 @@ export function ProductMenuTable({
                 <TableCell>
                   <div className="flex flex-col">
                     <span className="font-medium">{item.name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {item.category}
-                    </span>
+                    <span className="text-xs text-muted-foreground">{item.category}</span>
                   </div>
                 </TableCell>
                 <TableCell className="font-medium">
@@ -99,17 +58,13 @@ export function ProductMenuTable({
                 </TableCell>
                 <TableCell>
                   <span className="font-semibold">{item.availableStock}</span>
-                  <span className="text-xs text-muted-foreground ml-1">
-                    servings
-                  </span>
+                  <span className="text-xs text-muted-foreground ml-1">servings</span>
                 </TableCell>
                 <TableCell>
-                  <StockBadge status={item.stockStatus} />
+                  <InventoryStatusBadge status={item.stockStatus} />
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm text-muted-foreground">
-                    {item.recipeName}
-                  </span>
+                  <span className="text-sm text-muted-foreground">{item.recipeName}</span>
                 </TableCell>
                 <TableCell>
                   {item.ingredients.length > 0 ? (
@@ -131,30 +86,10 @@ export function ProductMenuTable({
                 <TableCell className="text-right text-muted-foreground">
                   {formatDate(item.updatedAt)}
                 </TableCell>
-                {(onEdit || onDelete) && (
-                  <TableCell>
-                    <div className="flex gap-1 justify-end">
-                      {onEdit && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => onEdit(item)}>
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Button>
-                      )}
-                      {onDelete && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-destructive hover:text-destructive"
-                          onClick={() => onDelete(item)}>
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      )}
-                    </div>
-                  </TableCell>
-                )}
+                <InventoryTableActions
+                  onEdit={onEdit ? () => onEdit(item) : undefined}
+                  onDelete={onDelete ? () => onDelete(item) : undefined}
+                />
               </TableRow>
             ))
           )}

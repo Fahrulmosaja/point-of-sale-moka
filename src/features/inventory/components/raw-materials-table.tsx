@@ -1,6 +1,7 @@
 "use client";
 
 import { RawMaterial } from "@/types/raw-material.types";
+import { formatDate } from "@/lib/date-utils";
 import {
   Table,
   TableBody,
@@ -10,15 +11,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  AlertTriangle,
-  AlertCircle,
-  CheckCircle2,
-  Pencil,
-  Trash2,
-} from "lucide-react";
-import { formatDate } from "@/lib/date-utils";
+import { InventoryStatusBadge } from "./inventory-status-badge";
+import { InventoryTableActions } from "./inventory-table-actions";
 
 interface RawMaterialsTableProps {
   items: RawMaterial[];
@@ -26,38 +20,7 @@ interface RawMaterialsTableProps {
   onDelete?: (item: RawMaterial) => void;
 }
 
-function StatusBadge({ status }: { status: RawMaterial["status"] }) {
-  switch (status) {
-    case "out_of_stock":
-      return (
-        <Badge
-          variant="destructive"
-          className="gap-1.5 flex items-center w-fit">
-          <AlertCircle className="h-3.5 w-3.5" /> Out of Stock
-        </Badge>
-      );
-    case "low_stock":
-      return (
-        <Badge
-          variant="outline"
-          className="gap-1.5 border-amber-500 text-amber-500 flex items-center w-fit">
-          <AlertTriangle className="h-3.5 w-3.5" /> Low Stock
-        </Badge>
-      );
-    case "healthy":
-      return (
-        <Badge variant="secondary" className="gap-1.5 flex items-center w-fit">
-          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> Healthy
-        </Badge>
-      );
-  }
-}
-
-export function RawMaterialsTable({
-  items,
-  onEdit,
-  onDelete,
-}: RawMaterialsTableProps) {
+export function RawMaterialsTable({ items, onEdit, onDelete }: RawMaterialsTableProps) {
   return (
     <div className="rounded-md border bg-card">
       <Table>
@@ -76,9 +39,7 @@ export function RawMaterialsTable({
         <TableBody>
           {items.length === 0 ? (
             <TableRow>
-              <TableCell
-                colSpan={8}
-                className="h-24 text-center text-muted-foreground">
+              <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
                 No raw materials found.
               </TableCell>
             </TableRow>
@@ -88,9 +49,7 @@ export function RawMaterialsTable({
                 <TableCell className="font-medium">{item.name}</TableCell>
                 <TableCell>
                   <span className="font-semibold">{item.currentStock}</span>
-                  <span className="text-muted-foreground text-sm ml-1">
-                    {item.unit}
-                  </span>
+                  <span className="text-muted-foreground text-sm ml-1">{item.unit}</span>
                 </TableCell>
                 <TableCell>
                   <span className="text-muted-foreground">
@@ -103,7 +62,7 @@ export function RawMaterialsTable({
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <StatusBadge status={item.status} />
+                  <InventoryStatusBadge status={item.status} />
                 </TableCell>
                 <TableCell>
                   {item.usedBy && item.usedBy.length > 0 ? (
@@ -124,30 +83,10 @@ export function RawMaterialsTable({
                 <TableCell className="text-right text-muted-foreground">
                   {formatDate(item.updatedAt)}
                 </TableCell>
-                {(onEdit || onDelete) && (
-                  <TableCell>
-                    <div className="flex gap-1 justify-end">
-                      {onEdit && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => onEdit(item)}>
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Button>
-                      )}
-                      {onDelete && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-destructive hover:text-destructive"
-                          onClick={() => onDelete(item)}>
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      )}
-                    </div>
-                  </TableCell>
-                )}
+                <InventoryTableActions
+                  onEdit={onEdit ? () => onEdit(item) : undefined}
+                  onDelete={onDelete ? () => onDelete(item) : undefined}
+                />
               </TableRow>
             ))
           )}

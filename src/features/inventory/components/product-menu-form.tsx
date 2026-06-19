@@ -1,7 +1,8 @@
 "use client";
 
 import { ProductMenu } from "@/types/product-menu.types";
-import { Button } from "@/components/ui/button";
+import { useProductMenuForm } from "../hooks/use-product-menu-form";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,14 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { useProductMenuForm } from "../hooks/use-product-menu-form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { FormDialogFooter } from "./form-dialog-footer";
 
 interface ProductMenuFormProps {
   open: boolean;
@@ -26,20 +21,9 @@ interface ProductMenuFormProps {
   editItem?: ProductMenu | null;
 }
 
-const CATEGORIES = [
-  "Espresso Based",
-  "Non-Coffee",
-  "Tea",
-  "Food",
-  "Snacks",
-  "Beverages",
-];
+const CATEGORIES = ["Espresso Based", "Non-Coffee", "Tea", "Food", "Snacks", "Beverages"];
 
-export function ProductMenuForm({
-  open,
-  onClose,
-  editItem,
-}: ProductMenuFormProps) {
+export function ProductMenuForm({ open, onClose, editItem }: ProductMenuFormProps) {
   const {
     register,
     handleSubmit,
@@ -53,24 +37,20 @@ export function ProductMenuForm({
     recipes,
   } = useProductMenuForm({ editItem, onClose });
 
+  const handleClose = () => {
+    reset();
+    onClose();
+  };
+
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(v) => {
-        if (!v) {
-          reset();
-          onClose();
-        }
-      }}>
+    <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
             {isEditing ? "Edit Product Menu" : "Add Product Menu"}
           </DialogTitle>
         </DialogHeader>
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-4 py-2">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 py-2">
           <div className="grid gap-2">
             <Label htmlFor="pm-name">Product Name</Label>
             <Input
@@ -100,9 +80,7 @@ export function ProductMenuForm({
               </SelectContent>
             </Select>
             {errors.category && (
-              <p className="text-xs text-destructive">
-                {errors.category.message}
-              </p>
+              <p className="text-xs text-destructive">{errors.category.message}</p>
             )}
           </div>
 
@@ -127,11 +105,7 @@ export function ProductMenuForm({
 
           <div className="grid gap-2">
             <Label htmlFor="pm-image">Image URL (optional)</Label>
-            <Input
-              id="pm-image"
-              placeholder="https://..."
-              {...register("imageUrl")}
-            />
+            <Input id="pm-image" placeholder="https://..." {...register("imageUrl")} />
           </div>
 
           <div className="grid gap-2">
@@ -172,20 +146,11 @@ export function ProductMenuForm({
             </Label>
           </div>
 
-          <DialogFooter className="mt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                reset();
-                onClose();
-              }}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : isEditing ? "Update" : "Create"}
-            </Button>
-          </DialogFooter>
+          <FormDialogFooter
+            isSubmitting={isSubmitting}
+            isEditing={isEditing}
+            onCancel={handleClose}
+          />
         </form>
       </DialogContent>
     </Dialog>
