@@ -17,6 +17,11 @@
 /.next/
 /out/
 
+# prd
+/prd.md
+/final.md
+
+
 # production
 /build
 
