@@ -34,5 +34,5 @@ export const OrderService = {
     }));
 
     return result;
-  }
+  },
 };

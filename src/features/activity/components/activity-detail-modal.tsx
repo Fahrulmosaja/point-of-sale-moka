@@ -39,17 +39,12 @@ const typeMap: Record<string, string> = {
   online: "Online",
 };
 
-export function ActivityDetailModal({
-  sale,
-  open,
-  onClose,
-}: ActivityDetailModalProps) {
+export function ActivityDetailModal({ sale, open, onClose }: ActivityDetailModalProps) {
   if (!sale) return null;
 
   const isRefundable = sale.status === "completed";
 
   const handleRefund = async () => {
-    // Future: call POST /api/sales/[id]/refund
     toast.info("Refund feature coming soon.");
     onClose();
   };
@@ -73,16 +68,14 @@ export function ActivityDetailModal({
             </Badge>
           </DialogTitle>
           <DialogDescription>
-            {formatDate(sale.date)} · {typeMap[sale.type]} ·{" "}
-            {sale.paymentMethod} · {sale.cashierName}
+            {formatDate(sale.date)} · {typeMap[sale.type]} · {sale.paymentMethod} ·{" "}
+            {sale.cashierName}
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-3 my-2">
           {sale.items.map((item) => (
-            <div
-              key={item.id}
-              className="flex justify-between items-start text-sm">
+            <div key={item.id} className="flex justify-between items-start text-sm">
               <div>
                 <p className="font-medium">{item.productMenuName}</p>
                 <p className="text-muted-foreground text-xs">
@@ -127,8 +120,8 @@ export function ActivityDetailModal({
                 <AlertDialogHeader>
                   <AlertDialogTitle>Process Refund?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will mark invoice <strong>{sale.invoiceNumber}</strong>{" "}
-                    as refunded.
+                    This will mark invoice <strong>{sale.invoiceNumber}</strong> as
+                    refunded.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

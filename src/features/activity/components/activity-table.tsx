@@ -56,16 +56,13 @@ export function ActivityTable({ sales, onViewDetail }: ActivityTableProps) {
         <TableBody>
           {sales.length === 0 ? (
             <TableRow>
-              <TableCell
-                colSpan={7}
-                className="h-24 text-center text-muted-foreground">
+              <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                 No transactions found.
               </TableCell>
             </TableRow>
           ) : (
             sales.map((sale) => {
-              const info =
-                statusVariantMap[sale.status] ?? statusVariantMap.completed;
+              const info = statusVariantMap[sale.status] ?? statusVariantMap.completed;
               return (
                 <TableRow key={sale.id}>
                   <TableCell className="font-mono font-semibold">
