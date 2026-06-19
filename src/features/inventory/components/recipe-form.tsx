@@ -1,25 +1,16 @@
 "use client";
 
+import { Plus } from "lucide-react";
+
 import { Recipe } from "@/types/recipe.types";
+import { useRecipeForm } from "../hooks/use-recipe-form";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Plus, Trash2 } from "lucide-react";
-import { useRecipeForm } from "../hooks/use-recipe-form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { RecipeIngredientRow } from "./recipe-ingredient-row";
+import { FormDialogFooter } from "./form-dialog-footer";
 
 interface RecipeFormProps {
   open: boolean;
@@ -43,24 +34,18 @@ export function RecipeForm({ open, onClose, editItem }: RecipeFormProps) {
     rawMaterials,
   } = useRecipeForm({ editItem, onClose });
 
+  const handleClose = () => {
+    reset();
+    onClose();
+  };
+
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(v) => {
-        if (!v) {
-          reset();
-          onClose();
-        }
-      }}>
+    <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            {isEditing ? "Edit Recipe" : "Create Recipe"}
-          </DialogTitle>
+          <DialogTitle>{isEditing ? "Edit Recipe" : "Create Recipe"}</DialogTitle>
         </DialogHeader>
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-4 py-2">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 py-2">
           <div className="grid gap-2">
             <Label htmlFor="rec-name">Recipe Name</Label>
             <Input
@@ -94,64 +79,25 @@ export function RecipeForm({ open, onClose, editItem }: RecipeFormProps) {
                 <Plus className="h-3 w-3" /> Add
               </Button>
             </div>
-
             {fields.map((field, idx) => (
-              <div key={field.id} className="flex gap-2 items-start">
-                <Select
-                  value={ingredients[idx]?.rawMaterialId ?? ""}
-                  onValueChange={(v) =>
-                    setValue(`ingredients.${idx}.rawMaterialId`, v)
-                  }>
-                  <SelectTrigger className="flex-1">
-                    <SelectValue placeholder="Select material" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {rawMaterials.map((rm) => (
-                      <SelectItem key={rm.id} value={rm.id}>
-                        {rm.name} ({rm.unit})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Input
-                  type="number"
-                  min="0.01"
-                  step="0.01"
-                  className="w-28"
-                  placeholder="Qty"
-                  {...register(`ingredients.${idx}.quantity`, {
-                    valueAsNumber: true,
-                    min: 0.01,
-                  })}
-                />
-                {fields.length > 1 && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-destructive hover:text-destructive shrink-0"
-                    onClick={() => remove(idx)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
+              <RecipeIngredientRow
+                key={field.id}
+                index={idx}
+                rawMaterialId={ingredients[idx]?.rawMaterialId ?? ""}
+                rawMaterials={rawMaterials}
+                showDelete={fields.length > 1}
+                register={register}
+                setValue={setValue}
+                onRemove={() => remove(idx)}
+              />
             ))}
           </div>
 
-          <DialogFooter className="mt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                reset();
-                onClose();
-              }}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : isEditing ? "Update" : "Create"}
-            </Button>
-          </DialogFooter>
+          <FormDialogFooter
+            isSubmitting={isSubmitting}
+            isEditing={isEditing}
+            onCancel={handleClose}
+          />
         </form>
       </DialogContent>
     </Dialog>

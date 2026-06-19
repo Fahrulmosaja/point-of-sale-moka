@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import { InventoryTabs } from "@/features/inventory/components/inventory-tabs";
+
+import { InventoryOverview } from "@/features/inventory/components/inventory-overview";
 
 export const metadata = {
   title: "Inventory | Moka POS",
@@ -11,12 +12,10 @@ export default function InventoryPage() {
   return (
     <div className="w-full h-full flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">
-          Inventory Management
-        </h1>
+        <h1 className="text-2xl font-bold tracking-tight">Inventory Management</h1>
         <p className="text-muted-foreground mt-2">
-          Manage raw materials and product menus. Stock is calculated
-          dynamically from recipes.
+          Manage raw materials and product menus. Stock is calculated dynamically from
+          recipes.
         </p>
       </div>
 
@@ -25,14 +24,11 @@ export default function InventoryPage() {
           fallback={
             <div className="space-y-2">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="h-14 rounded-md bg-muted animate-pulse"
-                />
+                <div key={i} className="h-14 rounded-md bg-muted animate-pulse" />
               ))}
             </div>
           }>
-          <InventoryTabs />
+          <InventoryOverview />
         </Suspense>
       </div>
     </div>

@@ -1,10 +1,8 @@
 "use client";
 
-import {
-  RawMaterial,
-  Unit,
-} from "@/types/raw-material.types";
-import { Button } from "@/components/ui/button";
+import { RawMaterial, Unit } from "@/types/raw-material.types";
+import { useRawMaterialForm } from "../hooks/use-raw-material-form";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -14,14 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { useRawMaterialForm } from "../hooks/use-raw-material-form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { FormDialogFooter } from "./form-dialog-footer";
 
 interface RawMaterialFormProps {
   open: boolean;
@@ -29,11 +21,7 @@ interface RawMaterialFormProps {
   editItem?: RawMaterial | null;
 }
 
-export function RawMaterialForm({
-  open,
-  onClose,
-  editItem,
-}: RawMaterialFormProps) {
+export function RawMaterialForm({ open, onClose, editItem }: RawMaterialFormProps) {
   const {
     register,
     handleSubmit,
@@ -45,24 +33,20 @@ export function RawMaterialForm({
     isEditing,
   } = useRawMaterialForm({ editItem, onClose });
 
+  const handleClose = () => {
+    reset();
+    onClose();
+  };
+
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(v) => {
-        if (!v) {
-          reset();
-          onClose();
-        }
-      }}>
+    <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
             {isEditing ? "Edit Raw Material" : "Add Raw Material"}
           </DialogTitle>
         </DialogHeader>
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-4 py-2">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 py-2">
           <div className="grid gap-2">
             <Label htmlFor="rm-name">Name</Label>
             <Input
@@ -83,9 +67,7 @@ export function RawMaterialForm({
               {...register("category", { required: "Category is required" })}
             />
             {errors.category && (
-              <p className="text-xs text-destructive">
-                {errors.category.message}
-              </p>
+              <p className="text-xs text-destructive">{errors.category.message}</p>
             )}
           </div>
 
@@ -136,20 +118,11 @@ export function RawMaterialForm({
             </div>
           </div>
 
-          <DialogFooter className="mt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                reset();
-                onClose();
-              }}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : isEditing ? "Update" : "Create"}
-            </Button>
-          </DialogFooter>
+          <FormDialogFooter
+            isSubmitting={isSubmitting}
+            isEditing={isEditing}
+            onCancel={handleClose}
+          />
         </form>
       </DialogContent>
     </Dialog>
