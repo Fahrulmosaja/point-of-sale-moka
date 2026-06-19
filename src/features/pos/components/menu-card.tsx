@@ -1,14 +1,17 @@
 "use client";
 
-import { Product } from "@/types/product.types";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Star, AlertTriangle } from "lucide-react";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+
 import { usePosStore } from "@/stores/pos-store";
 import { useCartOperations } from "../hooks/use-cart-operations";
 import { formatCurrency } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { Product } from "@/types/product.types";
+
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 interface MenuCardProps {
   product: Product;
@@ -33,17 +36,18 @@ export function MenuCard({ product }: MenuCardProps) {
       onClick={() => !isOutOfStock && handleAddItem(product)}>
       <div className="relative w-full aspect-square bg-muted overflow-hidden flex items-center justify-center">
         {product.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={product.imageUrl}
             alt={product.name}
+            width={200}
+            height={200}
+            priority={true}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
           <span className="text-4xl">☕</span>
         )}
 
-        {/* Favorite button — always enabled regardless of stock */}
         <Button
           variant="secondary"
           size="icon"
@@ -57,18 +61,14 @@ export function MenuCard({ product }: MenuCardProps) {
           />
         </Button>
 
-        {/* Out of Stock overlay */}
         {isOutOfStock && (
           <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
-            <Badge
-              variant="destructive"
-              className="text-xs font-semibold px-2 py-1">
+            <Badge variant="destructive" className="text-xs font-semibold px-2 py-1">
               Out of Stock
             </Badge>
           </div>
         )}
 
-        {/* Low Stock badge */}
         {isLowStock && !isOutOfStock && (
           <Badge
             variant="outline"
@@ -89,9 +89,7 @@ export function MenuCard({ product }: MenuCardProps) {
             Stock
           </span>
           {isOutOfStock ? (
-            <span className="text-xs font-semibold text-destructive">
-              0 (Sold Out)
-            </span>
+            <span className="text-xs font-semibold text-destructive">0 (Sold Out)</span>
           ) : (
             <span
               className={cn(
