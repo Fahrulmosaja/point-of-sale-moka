@@ -16,7 +16,6 @@ export default function SettingsPage() {
           <SettingsAppearance />
           <Separator />
 
-          {/* Placeholder for future preferences */}
           <div className="flex flex-col gap-2">
             <h2 className="text-base font-semibold">Preferences</h2>
             <p className="text-sm text-muted-foreground">
