@@ -78,6 +78,7 @@ export const ProductMenuService = {
           rawMaterialName: i.rawMaterialName,
           unit: i.unit,
           quantity: parseFloat(i.quantity),
+          currentStock: parseFloat(i.currentStock),
         })),
       };
     });

@@ -2,6 +2,10 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 
 import { CartItem as CartItemType, useCartStore } from "@/stores/cart-store";
 import { formatCurrency } from "@/lib/utils";
+import {
+  computeRawMaterialConsumed,
+  computeEffectiveStock,
+} from "@/lib/stock-calculator";
 
 import { Button } from "@/components/ui/button";
 
@@ -10,7 +14,10 @@ interface CartItemProps {
 }
 
 export function CartItem({ item }: CartItemProps) {
-  const { updateQuantity, removeItem } = useCartStore();
+  const { updateQuantity, removeItem, items } = useCartStore();
+  const consumed = computeRawMaterialConsumed(items);
+  const effectiveStock = computeEffectiveStock(item.product, consumed);
+  const maxReached = effectiveStock <= 0;
 
   return (
     <div className="flex flex-col gap-2">
@@ -46,6 +53,7 @@ export function CartItem({ item }: CartItemProps) {
             variant="outline"
             size="icon"
             className="h-7 w-7 rounded-full"
+            disabled={maxReached}
             onClick={() => updateQuantity(item.productMenuId, item.quantity + 1)}>
             <Plus className="h-3 w-3" />
           </Button>
