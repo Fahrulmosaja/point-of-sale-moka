@@ -63,3 +63,74 @@ export function getRawMaterialStatus(
   if (currentStock <= minimumStock) return "low_stock";
   return "healthy";
 }
+
+// ---------------------------------------------------------------------------
+// Client-side helpers for ingredient-aware effective stock calculation
+// ---------------------------------------------------------------------------
+
+interface CartItemForStock {
+  quantity: number;
+  product: {
+    ingredients: Array<{
+      rawMaterialId: string;
+      quantity: number; // amount of raw material per serving
+    }>;
+  };
+}
+
+/**
+ * Build a map of how much of each raw material is "consumed" by the
+ * current cart (local reservation — DB not touched yet).
+ *
+ * consumed[rawMaterialId] = total raw material units reserved by cart
+ */
+export function computeRawMaterialConsumed(
+  cartItems: CartItemForStock[],
+): Record<string, number> {
+  const consumed: Record<string, number> = {};
+  for (const cartItem of cartItems) {
+    for (const ing of cartItem.product.ingredients) {
+      consumed[ing.rawMaterialId] =
+        (consumed[ing.rawMaterialId] ?? 0) + cartItem.quantity * ing.quantity;
+    }
+  }
+  return consumed;
+}
+
+/**
+ * Compute how many MORE servings of `product` can still be made after
+ * accounting for raw material already reserved in the cart.
+ *
+ * Uses the same formula as the server's calculateProductStock.
+ * Falls back to (availableStock) when ingredient.currentStock is absent.
+ */
+export function computeEffectiveStock(
+  product: {
+    availableStock: number;
+    ingredients: Array<{
+      rawMaterialId: string;
+      quantity: number;
+      currentStock?: number;
+    }>;
+  },
+  consumed: Record<string, number>,
+): number {
+  // If ingredients don't carry currentStock, we can't do ingredient-aware calc.
+  if (
+    product.ingredients.length === 0 ||
+    product.ingredients[0].currentStock === undefined
+  ) {
+    return product.availableStock;
+  }
+
+  const adjustedIngredients = product.ingredients.map((ing) => ({
+    quantity: ing.quantity,
+    currentStock: Math.max(
+      0,
+      (ing.currentStock ?? 0) - (consumed[ing.rawMaterialId] ?? 0),
+    ),
+    minimumStock: 0, // threshold not needed for availability calc
+  }));
+
+  return calculateProductStock(adjustedIngredients);
+}

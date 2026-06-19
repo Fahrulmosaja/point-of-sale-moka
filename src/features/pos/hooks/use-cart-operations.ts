@@ -2,6 +2,10 @@ import { useCartStore } from "@/stores/cart-store";
 import { Product } from "@/types/product.types";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
+import {
+  computeRawMaterialConsumed,
+  computeEffectiveStock,
+} from "@/lib/stock-calculator";
 
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -15,16 +19,13 @@ export function useCartOperations() {
       return;
     }
 
-    if (product.stockStatus === "low_stock") {
-      toast.warning(`${product.name} is running low!`, {
-        description: `Only ${product.availableStock} serving${product.availableStock !== 1 ? "s" : ""} remaining.`,
-        action: {
-          label: "Check Inventory",
-          onClick: () => {
-            window.location.href = "/inventory";
-          },
-        },
+    const consumed = computeRawMaterialConsumed(items);
+    const effectiveStock = computeEffectiveStock(product, consumed);
+    if (effectiveStock <= 0) {
+      toast.error(`Stock limit reached for ${product.name}!`, {
+        description: `All available stock has been reserved in the cart.`,
       });
+      return;
     }
 
     addItem(product, quantity, notes);

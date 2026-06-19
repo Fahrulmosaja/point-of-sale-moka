@@ -5,6 +5,11 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 import { usePosStore } from "@/stores/pos-store";
+import { useCartStore } from "@/stores/cart-store";
+import {
+  computeRawMaterialConsumed,
+  computeEffectiveStock,
+} from "@/lib/stock-calculator";
 import { useCartOperations } from "../hooks/use-cart-operations";
 import { formatCurrency } from "@/lib/utils";
 import { Product } from "@/types/product.types";
@@ -21,9 +26,13 @@ export function MenuCard({ product }: MenuCardProps) {
   const { handleAddItem } = useCartOperations();
   const { favorites, toggleFavorite } = usePosStore();
 
+  const cartItems = useCartStore((state) => state.items);
+  const consumed = computeRawMaterialConsumed(cartItems);
+  const effectiveStock = computeEffectiveStock(product, consumed);
+
   const isFav = favorites.includes(product.id);
-  const isOutOfStock = product.stockStatus === "out_of_stock";
-  const isLowStock = product.stockStatus === "low_stock";
+  const isOutOfStock = product.stockStatus === "out_of_stock" || effectiveStock <= 0;
+  const isLowStock = product.stockStatus === "low_stock" && effectiveStock > 0;
 
   return (
     <Card
@@ -96,7 +105,7 @@ export function MenuCard({ product }: MenuCardProps) {
                 "text-xs font-semibold",
                 isLowStock ? "text-amber-500" : "text-emerald-500",
               )}>
-              {product.availableStock} servings
+              {effectiveStock} servings
             </span>
           )}
         </div>
