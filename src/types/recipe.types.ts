@@ -7,7 +7,6 @@ export interface RecipeIngredient {
   rawMaterialName: string;
   unit: Unit;
   quantity: number;
-  /** Raw material's current stock as fetched from DB — used for client-side effective stock calc */
   currentStock?: number;
 }
 

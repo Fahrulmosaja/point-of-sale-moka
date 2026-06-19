@@ -1,11 +1,17 @@
-"use client"
+"use client";
 
-import { useTheme } from "next-themes"
-import { Toaster as Sonner, type ToasterProps } from "sonner"
-import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
+import { useTheme } from "next-themes";
+import { Toaster as Sonner, type ToasterProps } from "sonner";
+import {
+  CircleCheckIcon,
+  InfoIcon,
+  TriangleAlertIcon,
+  OctagonXIcon,
+  Loader2Icon,
+} from "lucide-react";
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+  const { theme = "system" } = useTheme();
 
   return (
     <Sonner
@@ -34,13 +40,10 @@ const Toaster = ({ ...props }: ToasterProps) => {
           error:
             "bg-[#2b0a0a] border-[#dc2626]/40 text-rose-100 [&>[data-icon]]:text-rose-400",
           // Info — muted blue
-          info:
-            "bg-[#0a1a2b] border-[#3b82f6]/40 text-sky-100 [&>[data-icon]]:text-sky-400",
+          info: "bg-[#0a1a2b] border-[#3b82f6]/40 text-sky-100 [&>[data-icon]]:text-sky-400",
           // Default / loading
-          default:
-            "bg-popover border-border text-popover-foreground",
-          loader:
-            "bg-popover border-border text-popover-foreground",
+          default: "bg-popover border-border text-popover-foreground",
+          loader: "bg-popover border-border text-popover-foreground",
         },
       }}
       icons={{
@@ -58,7 +61,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       }
       {...props}
     />
-  )
-}
+  );
+};
 
-export { Toaster }
+export { Toaster };
