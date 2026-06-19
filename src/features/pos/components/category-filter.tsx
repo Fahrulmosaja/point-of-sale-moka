@@ -1,16 +1,16 @@
 "use client";
 
+import { useMemo } from "react";
 import { usePosStore } from "@/stores/pos-store";
 import { useProducts } from "../hooks/use-products";
+
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { useMemo } from "react";
 
 export function CategoryFilter() {
   const { selectedCategory, setSelectedCategory } = usePosStore();
   const { data: products = [] } = useProducts();
 
-  // Derive unique categories from loaded products
   const categories = useMemo(() => {
     const cats = Array.from(new Set(products.map((p) => p.category))).sort();
     return cats;

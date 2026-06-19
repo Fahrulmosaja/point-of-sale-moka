@@ -1,17 +1,14 @@
 "use client";
 
-import { usePosStore } from "@/stores/pos-store";
-import { useProducts } from "../hooks/use-products";
-import { MenuCard } from "./menu-card";
 import { useMemo } from "react";
 
-export function MenuGrid() {
-  const {
-    searchQuery,
-    selectedCategory,
-    favorites,
-  } = usePosStore();
+import { useProducts } from "../hooks/use-products";
+import { usePosStore } from "@/stores/pos-store";
 
+import { MenuCard } from "./menu-card";
+
+export function MenuOverview() {
+  const { searchQuery, selectedCategory, favorites } = usePosStore();
   const { data: products = [], isLoading } = useProducts();
 
   const filteredProducts = useMemo(() => {
@@ -23,12 +20,9 @@ export function MenuGrid() {
 
     if (searchQuery) {
       const lowerQuery = searchQuery.toLowerCase();
-      filtered = filtered.filter((p) =>
-        p.name.toLowerCase().includes(lowerQuery),
-      );
+      filtered = filtered.filter((p) => p.name.toLowerCase().includes(lowerQuery));
     }
 
-    // Sort: Favorites first, then by name
     filtered.sort((a, b) => {
       const aFav = favorites.includes(a.id) ? 1 : 0;
       const bFav = favorites.includes(b.id) ? 1 : 0;
@@ -43,10 +37,7 @@ export function MenuGrid() {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {Array.from({ length: 10 }).map((_, i) => (
-          <div
-            key={i}
-            className="rounded-lg bg-muted animate-pulse aspect-[3/4]"
-          />
+          <div key={i} className="rounded-lg bg-muted animate-pulse aspect-3/4" />
         ))}
       </div>
     );
@@ -61,7 +52,7 @@ export function MenuGrid() {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+    <div className="grid py-1 pl-1 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
       {filteredProducts.map((product) => (
         <MenuCard key={product.id} product={product} />
       ))}
