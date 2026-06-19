@@ -41,7 +41,7 @@ export default function RootLayout({
         inter.variable,
       )}
       suppressHydrationWarning>
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+      <body className="h-full flex flex-col overflow-hidden" suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
