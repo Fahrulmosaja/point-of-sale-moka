@@ -1,5 +1,10 @@
 import { ShiftOverview } from "@/features/shift/components/shift-overview";
 
+export const metadata = {
+  title: "Shift | Moka POS",
+  description: "View the current shift summary and payment breakdown.",
+};
+
 export default function ShiftPage() {
   return (
     <div className="w-full h-full flex flex-col gap-6">

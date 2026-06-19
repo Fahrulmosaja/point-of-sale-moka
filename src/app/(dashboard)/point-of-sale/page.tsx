@@ -2,6 +2,12 @@ import { CategoryFilter } from "@/features/pos/components/category-filter";
 import { MenuOverview } from "@/features/pos/components/menu-overview";
 import { CartOverview } from "@/features/pos/components/cart-overview";
 
+export const metadata = {
+  title: "Point of Sale | Moka POS",
+  description:
+    "Manage your sales transactions efficiently. Browse the menu, add items to the cart, and complete sales with ease.",
+};
+
 export default function PointOfSalePage() {
   return (
     <main className="flex flex-col lg:flex-row gap-6 items-start max-w-full lg:h-full lg:overflow-hidden">

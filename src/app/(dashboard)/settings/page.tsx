@@ -1,14 +1,17 @@
 import { SettingsAppearance } from "@/features/settings/components/settings-appearance";
 import { Separator } from "@/components/ui/separator";
 
+export const metadata = {
+  title: "Settings | Moka POS",
+  description: "Manage your Moka POS preferences.",
+};
+
 export default function SettingsPage() {
   return (
     <div className="w-full h-full flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground mt-2">
-          Manage your BrewFlow POS preferences.
-        </p>
+        <p className="text-muted-foreground mt-2">Manage your Moka POS preferences.</p>
       </div>
 
       <div className="flex-1 overflow-auto max-w-3xl">
