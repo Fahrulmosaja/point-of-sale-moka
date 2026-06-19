@@ -67,7 +67,6 @@ export function CartSummary() {
 
         <AlertDialogContent>
           <AlertDialogHeader>
-            {/* Icon badge */}
             <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-primary/10 ring-1 ring-primary/20">
               <CreditCard className="size-5 text-primary" />
             </div>
@@ -79,7 +78,6 @@ export function CartSummary() {
             </AlertDialogDescription>
           </AlertDialogHeader>
 
-          {/* Order summary inside dialog */}
           <div className="rounded-lg border border-border bg-muted/30 px-4 py-3 text-sm space-y-1.5">
             <div className="flex justify-between text-muted-foreground">
               <span className="flex items-center gap-1.5">

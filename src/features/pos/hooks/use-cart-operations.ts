@@ -61,7 +61,6 @@ export function useCartOperations() {
 
       clearCart();
 
-      // Refresh POS product list so stock counts update immediately
       queryClient.invalidateQueries({ queryKey: ["product-menus"] });
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Checkout failed";

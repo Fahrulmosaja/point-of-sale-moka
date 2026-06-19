@@ -115,7 +115,6 @@ export function computeEffectiveStock(
   },
   consumed: Record<string, number>,
 ): number {
-  // If ingredients don't carry currentStock, we can't do ingredient-aware calc.
   if (
     product.ingredients.length === 0 ||
     product.ingredients[0].currentStock === undefined
@@ -129,7 +128,7 @@ export function computeEffectiveStock(
       0,
       (ing.currentStock ?? 0) - (consumed[ing.rawMaterialId] ?? 0),
     ),
-    minimumStock: 0, // threshold not needed for availability calc
+    minimumStock: 0,
   }));
 
   return calculateProductStock(adjustedIngredients);

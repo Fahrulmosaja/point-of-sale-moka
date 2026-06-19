@@ -1,10 +1,5 @@
 import { db } from "@/db/index";
-import {
-  productMenus,
-  recipes,
-  recipeIngredients,
-  rawMaterials,
-} from "@/db/schema";
+import { productMenus, recipes, recipeIngredients, rawMaterials } from "@/db/schema";
 import { eq, isNull } from "drizzle-orm";
 import {
   calculateProductStock,
@@ -25,11 +20,8 @@ export const ProductMenuService = {
       .orderBy(productMenus.name);
 
     const products = await query;
-    const activeProducts = activeOnly
-      ? products.filter((p) => p.isActive)
-      : products;
+    const activeProducts = activeOnly ? products.filter((p) => p.isActive) : products;
 
-    // Fetch all ingredients with raw material stock in one query
     const allIngredients = await db
       .select({
         id: recipeIngredients.id,
@@ -42,18 +34,13 @@ export const ProductMenuService = {
         minimumStock: rawMaterials.minimumStock,
       })
       .from(recipeIngredients)
-      .innerJoin(
-        rawMaterials,
-        eq(recipeIngredients.rawMaterialId, rawMaterials.id),
-      );
+      .innerJoin(rawMaterials, eq(recipeIngredients.rawMaterialId, rawMaterials.id));
 
     const allRecipes = await db.select().from(recipes);
 
     return activeProducts.map((product) => {
       const recipe = allRecipes.find((r) => r.id === product.recipeId);
-      const ingredients = allIngredients.filter(
-        (i) => i.recipeId === product.recipeId,
-      );
+      const ingredients = allIngredients.filter((i) => i.recipeId === product.recipeId);
 
       const ingredientsForCalc = ingredients.map((i) => ({
         quantity: parseFloat(i.quantity),
@@ -113,26 +100,32 @@ export const ProductMenuService = {
   async updateProductMenu(id: string, body: any) {
     const { name, category, price, recipeId, imageUrl, isActive, isFavorite } = body;
 
-    await db.update(productMenus).set({
-      ...(name !== undefined && { name }),
-      ...(category !== undefined && { category }),
-      ...(price !== undefined && { price: String(price) }),
-      ...(recipeId !== undefined && { recipeId }),
-      ...(imageUrl !== undefined && { imageUrl }),
-      ...(isActive !== undefined && { isActive }),
-      ...(isFavorite !== undefined && { isFavorite }),
-      updatedAt: new Date(),
-    }).where(eq(productMenus.id, id));
+    await db
+      .update(productMenus)
+      .set({
+        ...(name !== undefined && { name }),
+        ...(category !== undefined && { category }),
+        ...(price !== undefined && { price: String(price) }),
+        ...(recipeId !== undefined && { recipeId }),
+        ...(imageUrl !== undefined && { imageUrl }),
+        ...(isActive !== undefined && { isActive }),
+        ...(isFavorite !== undefined && { isFavorite }),
+        updatedAt: new Date(),
+      })
+      .where(eq(productMenus.id, id));
 
     return { success: true };
   },
 
   async deleteProductMenu(id: string) {
-    await db.update(productMenus).set({
-      deletedAt: new Date(),
-      updatedAt: new Date(),
-    }).where(eq(productMenus.id, id));
+    await db
+      .update(productMenus)
+      .set({
+        deletedAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(eq(productMenus.id, id));
 
     return { success: true };
-  }
+  },
 };
