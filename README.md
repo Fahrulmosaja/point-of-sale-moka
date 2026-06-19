@@ -1,36 +1,322 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Moka POS Clone
 
-## Getting Started
+A modern Point of Sale (POS) application inspired by Moka POS, built with Next.js, TypeScript, Drizzle ORM, and Neon PostgreSQL.
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+This project simulates a real-world coffee shop POS system with integrated inventory management.
+
+The application is designed around a recipe-driven inventory architecture where:
+
+```text
+Raw Material
+    ↓
+Recipe
+    ↓
+Product Menu
+    ↓
+Point Of Sale
+    ↓
+Sales Transaction
+    ↓
+Inventory Deduction
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Every sale automatically deducts inventory based on the recipe assigned to each product.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
+### Point Of Sale
 
-To learn more about Next.js, take a look at the following resources:
+- Product catalog
+- Category filtering
+- Search products
+- Favorite products
+- Cart management
+- Dine In / Take Away orders
+- Checkout flow
+- Automatic inventory deduction
+- Low stock warning
+- Out of stock prevention
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Inventory Management
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+#### Raw Materials
 
-## Deploy on Vercel
+Manage ingredients and stock levels.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Examples:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Coffee Beans
+- Fresh Milk
+- Oat Milk
+- Matcha Powder
+- Chocolate Powder
+- Caramel Syrup
+
+Supported units:
+
+- gr
+- ml
+- pcs
+
+#### Recipes
+
+Define ingredients required for each menu item.
+
+Example:
+
+```text
+Caffe Latte
+├── Coffee Beans (18gr)
+└── Fresh Milk (150ml)
+```
+
+#### Product Menus
+
+Sellable products displayed in POS.
+
+Example:
+
+- Caffe Latte
+- Cappuccino
+- Matcha Latte
+- Americano
+- Chocolate
+
+### Sales
+
+- Transaction history
+- Order tracking
+- Payment recording
+- Sales details
+
+### Inventory Transactions
+
+Track all inventory movements.
+
+Supported transaction types:
+
+```text
+IN
+OUT
+ADJUSTMENT
+REFUND
+VOID
+```
+
+---
+
+## Tech Stack
+
+### Frontend
+
+- Next.js 16
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Zustand
+- TanStack Query
+
+### Backend
+
+- Next.js Route Handlers
+- Drizzle ORM
+- PostgreSQL
+
+### Database
+
+- Neon PostgreSQL
+
+### Deployment
+
+- Vercel
+
+---
+
+## Database Architecture
+
+### Core Flow
+
+```text
+raw_materials
+      │
+      ▼
+recipe_ingredients
+      ▲
+      │
+recipes
+      │
+      ▼
+product_menus
+      │
+      ▼
+sale_items
+      │
+      ▼
+sales
+```
+
+### Inventory Flow
+
+```text
+raw_materials
+      │
+      ▼
+inventory_transactions
+```
+
+---
+
+## Project Structure
+
+```text
+src/
+│
+├── app/
+│   ├── (dashboard)/
+│   ├── api/
+│   ├── favicon.ico
+│   ├── global.caa
+│   ├── page.tsx
+│   └── layout.tsx
+│
+├── components/
+│   ├── ui/
+│   └── shared/
+│
+├── features/
+│   ├── inventory/
+│   ├── pos/
+│   ├── activity/
+│   ├── online-orders/
+│   └── settings/
+│
+├── db/
+│   ├── schema
+│   ├── seed
+│   ├── migrations
+│   └── index.ts
+│
+├── hooks/
+│
+├── lib/
+│   ├── api-handler.ts
+│   ├── api.ts
+│   ├── date-utils.ts
+│   ├── stock-calculator.ts
+│   └── utils.ts
+│
+├── stores/
+│
+└── types/
+```
+
+---
+
+## Environment Variables
+
+Create a `.env.local` file:
+
+```env
+DATABASE_URL=your_neon_database_url
+```
+
+---
+
+## Local Development
+
+Install dependencies:
+
+```bash
+pnpm install
+```
+
+Run development server:
+
+```bash
+pnpm run dev
+```
+
+---
+
+## Database Migration
+
+Generate migration:
+
+```bash
+npx drizzle-kit generate
+```
+
+Push schema:
+
+```bash
+npx drizzle-kit push
+```
+
+Open Drizzle Studio:
+
+```bash
+npx drizzle-kit studio
+```
+
+---
+
+## Inventory Logic
+
+### Product Availability
+
+Product stock is calculated dynamically from raw materials.
+
+Example:
+
+```text
+Recipe:
+
+Coffee Beans = 18gr
+Fresh Milk = 150ml
+```
+
+Inventory:
+
+```text
+Coffee Beans = 5000gr
+Fresh Milk = 2000ml
+```
+
+Calculation:
+
+```text
+5000 / 18 = 277
+
+2000 / 150 = 13
+```
+
+Result:
+
+```text
+Available Stock = 13
+```
+
+The lowest available ingredient determines the product availability.
+
+---
+
+## Future Roadmap
+
+- Supplier Management
+- Purchase Orders
+- Stock Opname
+- Waste Tracking
+- Multi Outlet Support
+- Analytics Dashboard
+- Customer Management
+- Loyalty Program
+
+---
+
+## License
+
+This project is built for educational and portfolio purposes.
