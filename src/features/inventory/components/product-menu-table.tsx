@@ -1,7 +1,6 @@
 "use client";
 
 import { ProductMenu } from "@/types/product-menu.types";
-import { formatDate } from "@/lib/date-utils";
 import { formatCurrency } from "@/lib/utils";
 import {
   Table,
@@ -27,20 +26,18 @@ export function ProductMenuTable({ items, onEdit, onDelete }: ProductMenuTablePr
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Item Name</TableHead>
+            <TableHead>Product Name</TableHead>
             <TableHead>Price</TableHead>
-            <TableHead>Available Stock</TableHead>
+            <TableHead>Linked Recipe</TableHead>
+            <TableHead>Available Servings</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Recipe</TableHead>
-            <TableHead>Required Materials</TableHead>
-            <TableHead className="text-right">Last Updated</TableHead>
             {(onEdit || onDelete) && <TableHead className="w-20" />}
           </TableRow>
         </TableHeader>
         <TableBody>
           {items.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
+              <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
                 No product menus found.
               </TableCell>
             </TableRow>
@@ -53,39 +50,32 @@ export function ProductMenuTable({ items, onEdit, onDelete }: ProductMenuTablePr
                     <span className="text-xs text-muted-foreground">{item.category}</span>
                   </div>
                 </TableCell>
+
                 <TableCell className="font-medium">
                   {formatCurrency(item.price)}
                 </TableCell>
+
                 <TableCell>
-                  <span className="font-semibold">{item.availableStock}</span>
-                  <span className="text-xs text-muted-foreground ml-1">servings</span>
-                </TableCell>
-                <TableCell>
-                  <InventoryStatusBadge status={item.stockStatus} />
-                </TableCell>
-                <TableCell>
-                  <span className="text-sm text-muted-foreground">{item.recipeName}</span>
-                </TableCell>
-                <TableCell>
-                  {item.ingredients.length > 0 ? (
-                    <div className="flex flex-wrap gap-1">
-                      {item.ingredients.map((ing) => (
-                        <Badge
-                          key={ing.id}
-                          variant="outline"
-                          className="text-[10px] py-0 h-5 font-normal text-muted-foreground">
-                          {ing.rawMaterialName} ({ing.quantity}
-                          {ing.unit})
-                        </Badge>
-                      ))}
-                    </div>
+                  {item.recipeName ? (
+                    <Badge
+                      variant="outline"
+                      className="text-xs font-normal border-primary/40 text-primary">
+                      {item.recipeName}
+                    </Badge>
                   ) : (
                     <span className="text-xs text-muted-foreground">—</span>
                   )}
                 </TableCell>
-                <TableCell className="text-right text-muted-foreground">
-                  {formatDate(item.updatedAt)}
+
+                <TableCell>
+                  <span className="font-semibold">{item.availableStock}</span>
+                  <span className="text-xs text-muted-foreground ml-1">servings</span>
                 </TableCell>
+
+                <TableCell>
+                  <InventoryStatusBadge status={item.stockStatus} />
+                </TableCell>
+
                 <InventoryTableActions
                   onEdit={onEdit ? () => onEdit(item) : undefined}
                   onDelete={onDelete ? () => onDelete(item) : undefined}
