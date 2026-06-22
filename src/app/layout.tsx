@@ -44,7 +44,7 @@ export default function RootLayout({
       <body className="h-full flex flex-col overflow-hidden" suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange>
           <QueryProvider>
