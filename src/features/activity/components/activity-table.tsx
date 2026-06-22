@@ -44,13 +44,13 @@ export function ActivityTable({ sales, onViewDetail }: ActivityTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Action</TableHead>
             <TableHead>Invoice</TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Payment</TableHead>
             <TableHead>Total</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Action</TableHead>
+            <TableHead className="text-right">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -65,6 +65,14 @@ export function ActivityTable({ sales, onViewDetail }: ActivityTableProps) {
               const info = statusVariantMap[sale.status] ?? statusVariantMap.completed;
               return (
                 <TableRow key={sale.id}>
+                  <TableCell className="text-left">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onViewDetail(sale)}>
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
                   <TableCell className="font-mono font-semibold">
                     {sale.invoiceNumber}
                   </TableCell>
@@ -76,20 +84,12 @@ export function ActivityTable({ sales, onViewDetail }: ActivityTableProps) {
                   <TableCell className="font-semibold">
                     {formatCurrency(sale.total)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-right">
                     <Badge
                       variant="outline"
                       className={`text-xs font-medium ${info.className}`}>
                       {info.label}
                     </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onViewDetail(sale)}>
-                      <Eye className="h-4 w-4" />
-                    </Button>
                   </TableCell>
                 </TableRow>
               );

@@ -102,7 +102,7 @@ export function ActivityDetailModal({ sale, open, onClose }: ActivityDetailModal
             <Separator className="my-1" />
             <div className="flex justify-between font-bold text-base">
               <span>Total</span>
-              <span className="text-primary">{formatCurrency(sale.total)}</span>
+              <span>{formatCurrency(sale.total)}</span>
             </div>
           </div>
         </div>

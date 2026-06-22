@@ -58,8 +58,8 @@ export function ProductMenuTable({ items, onEdit, onDelete }: ProductMenuTablePr
                 <TableCell>
                   {item.recipeName ? (
                     <Badge
-                      variant="outline"
-                      className="text-xs font-normal border-primary/40 text-primary">
+                      variant="secondary"
+                      className="text-[10px] font-normal text-muted-foreground">
                       {item.recipeName}
                     </Badge>
                   ) : (
