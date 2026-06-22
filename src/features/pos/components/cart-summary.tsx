@@ -50,7 +50,7 @@ export function CartSummary() {
         <Separator className="my-2" />
         <div className="flex justify-between font-bold text-lg">
           <span>Total</span>
-          <span className="text-primary">{formatCurrency(total)}</span>
+          <span>{formatCurrency(total)}</span>
         </div>
       </div>
 
@@ -93,7 +93,7 @@ export function CartSummary() {
             <Separator className="my-1.5" />
             <div className="flex justify-between font-bold text-base">
               <span>Total</span>
-              <span className="text-primary">{formatCurrency(total)}</span>
+              <span>{formatCurrency(total)}</span>
             </div>
           </div>
 

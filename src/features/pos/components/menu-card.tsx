@@ -90,9 +90,7 @@ export function MenuCard({ product }: MenuCardProps) {
 
       <CardContent className="p-3 flex flex-col gap-1.5">
         <h3 className="font-semibold text-sm line-clamp-1">{product.name}</h3>
-        <p className="text-sm text-primary font-medium">
-          {formatCurrency(product.price)}
-        </p>
+        <p className="text-sm font-medium">{formatCurrency(product.price)}</p>
         <div className="flex items-center justify-between mt-1 pt-1 border-t">
           <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
             Stock
