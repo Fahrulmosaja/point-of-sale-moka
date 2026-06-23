@@ -26,6 +26,8 @@ export function RawMaterialsTable({ items, onEdit, onDelete }: RawMaterialsTable
       <Table>
         <TableHeader>
           <TableRow>
+            {/* {(onEdit || onDelete) && <TableHead className="w-20" />} */}
+            <TableHead>Action</TableHead>
             <TableHead>Item Name</TableHead>
             <TableHead>Current Stock</TableHead>
             <TableHead>Min Stock</TableHead>
@@ -33,7 +35,6 @@ export function RawMaterialsTable({ items, onEdit, onDelete }: RawMaterialsTable
             <TableHead>Status</TableHead>
             <TableHead>Used By</TableHead>
             <TableHead className="text-right">Last Updated</TableHead>
-            {(onEdit || onDelete) && <TableHead className="w-20" />}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -46,6 +47,10 @@ export function RawMaterialsTable({ items, onEdit, onDelete }: RawMaterialsTable
           ) : (
             items.map((item) => (
               <TableRow key={item.id}>
+                <InventoryTableActions
+                  onEdit={onEdit ? () => onEdit(item) : undefined}
+                  onDelete={onDelete ? () => onDelete(item) : undefined}
+                />
                 <TableCell className="font-medium">{item.name}</TableCell>
                 <TableCell>
                   <span className="font-semibold">{item.currentStock}</span>
@@ -83,10 +88,6 @@ export function RawMaterialsTable({ items, onEdit, onDelete }: RawMaterialsTable
                 <TableCell className="text-right text-muted-foreground">
                   {formatDate(item.updatedAt)}
                 </TableCell>
-                <InventoryTableActions
-                  onEdit={onEdit ? () => onEdit(item) : undefined}
-                  onDelete={onDelete ? () => onDelete(item) : undefined}
-                />
               </TableRow>
             ))
           )}

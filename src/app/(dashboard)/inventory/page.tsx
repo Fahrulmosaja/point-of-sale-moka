@@ -10,16 +10,16 @@ export const metadata = {
 
 export default function InventoryPage() {
   return (
-    <div className="w-full h-full flex flex-col gap-6">
-      <div>
+    <main className="w-full h-full flex flex-col gap-6 select-none">
+      <section>
         <h1 className="text-2xl font-bold tracking-tight">Inventory Management</h1>
         <p className="text-muted-foreground mt-2">
           Manage raw materials and product menus. Stock is calculated dynamically from
           recipes.
         </p>
-      </div>
+      </section>
 
-      <div className="flex-1 overflow-auto pr-1">
+      <section className="flex-1 overflow-auto pr-1">
         <Suspense
           fallback={
             <div className="space-y-2">
@@ -30,7 +30,7 @@ export default function InventoryPage() {
           }>
           <InventoryOverview />
         </Suspense>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
