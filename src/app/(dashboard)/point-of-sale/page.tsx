@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function PointOfSalePage() {
   return (
-    <main className="flex flex-col lg:flex-row gap-6 items-start max-w-full lg:h-full lg:overflow-hidden">
+    <main className="flex flex-col lg:flex-row gap-6 items-start max-w-full lg:h-full lg:overflow-hidden select-none">
       <section className="flex-1 flex flex-col gap-4 w-full min-w-0 lg:h-full lg:overflow-hidden">
         <div className="shrink-0">
           <CategoryFilter />
@@ -20,7 +20,7 @@ export default function PointOfSalePage() {
         </div>
       </section>
 
-      <section className="w-full lg:w-auto lg:shrink-0">
+      <section className="w-full lg:w-auto lg:shrink-0 ">
         <CartOverview />
       </section>
     </main>

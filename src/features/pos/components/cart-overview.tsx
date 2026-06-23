@@ -12,7 +12,7 @@ export function CartOverview() {
   const { items } = useCartStore();
 
   return (
-    <Card className="w-full lg:w-87.5 flex flex-col h-[calc(100vh-(--spacing(20)))] shrink-0 sticky top-4">
+    <Card className="w-full lg:w-87.5 flex flex-col h-[calc(100vh-(--spacing(20)))] shrink-0 sticky top-4 mb-16">
       <CartHeader />
       <CardContent className="flex-1 p-0 px-6 overflow-hidden flex flex-col">
         <ScrollArea className="flex-1 -mx-6 px-6">

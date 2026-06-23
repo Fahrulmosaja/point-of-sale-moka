@@ -36,7 +36,7 @@ export function CartItem({ item }: CartItemProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+          className="h-8 w-8 text-destructive bg-destructive/10 hover:text-destructive hover:bg-destructive/10 cursor-pointer"
           onClick={() => removeItem(item.productMenuId)}>
           <Trash2 className="h-4 w-4" />
         </Button>
@@ -44,7 +44,7 @@ export function CartItem({ item }: CartItemProps) {
           <Button
             variant="outline"
             size="icon"
-            className="h-7 w-7 rounded-full"
+            className="h-7 w-7 rounded-full cursor-pointer"
             onClick={() => updateQuantity(item.productMenuId, item.quantity - 1)}>
             <Minus className="h-3 w-3" />
           </Button>
@@ -52,7 +52,7 @@ export function CartItem({ item }: CartItemProps) {
           <Button
             variant="outline"
             size="icon"
-            className="h-7 w-7 rounded-full"
+            className="h-7 w-7 rounded-full cursor-pointer"
             disabled={maxReached}
             onClick={() => updateQuantity(item.productMenuId, item.quantity + 1)}>
             <Plus className="h-3 w-3" />
