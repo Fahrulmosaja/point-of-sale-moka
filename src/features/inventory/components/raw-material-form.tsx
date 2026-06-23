@@ -40,7 +40,9 @@ export function RawMaterialForm({ open, onClose, editItem }: RawMaterialFormProp
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>
             {isEditing ? "Edit Raw Material" : "Add Raw Material"}

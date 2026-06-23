@@ -41,7 +41,9 @@ export function RecipeForm({ open, onClose, editItem }: RecipeFormProps) {
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent
+        className="sm:max-w-lg max-h-[90vh] overflow-y-auto"
+        onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>{isEditing ? "Edit Recipe" : "Create Recipe"}</DialogTitle>
         </DialogHeader>

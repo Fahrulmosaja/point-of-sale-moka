@@ -44,7 +44,9 @@ export function ProductMenuForm({ open, onClose, editItem }: ProductMenuFormProp
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>
             {isEditing ? "Edit Product Menu" : "Add Product Menu"}

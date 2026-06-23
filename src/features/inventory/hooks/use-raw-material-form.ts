@@ -54,7 +54,7 @@ export function useRawMaterialForm({ editItem, onClose }: UseRawMaterialFormProp
         category: "",
         unit: "gr",
         currentStock: 0,
-        minimumStock: 0,
+        minimumStock: 10,
       });
     }
   }, [editItem, reset]);
