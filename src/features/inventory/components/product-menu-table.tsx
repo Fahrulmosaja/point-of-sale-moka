@@ -26,12 +26,13 @@ export function ProductMenuTable({ items, onEdit, onDelete }: ProductMenuTablePr
       <Table>
         <TableHeader>
           <TableRow>
+            {/* {(onEdit || onDelete) && <TableHead className="w-20" />} */}
+            <TableHead>Action</TableHead>
             <TableHead>Product Name</TableHead>
             <TableHead>Price</TableHead>
             <TableHead>Linked Recipe</TableHead>
             <TableHead>Available Servings</TableHead>
             <TableHead>Status</TableHead>
-            {(onEdit || onDelete) && <TableHead className="w-20" />}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -44,6 +45,10 @@ export function ProductMenuTable({ items, onEdit, onDelete }: ProductMenuTablePr
           ) : (
             items.map((item) => (
               <TableRow key={item.id}>
+                <InventoryTableActions
+                  onEdit={onEdit ? () => onEdit(item) : undefined}
+                  onDelete={onDelete ? () => onDelete(item) : undefined}
+                />
                 <TableCell>
                   <div className="flex flex-col">
                     <span className="font-medium">{item.name}</span>
@@ -75,11 +80,6 @@ export function ProductMenuTable({ items, onEdit, onDelete }: ProductMenuTablePr
                 <TableCell>
                   <InventoryStatusBadge status={item.stockStatus} />
                 </TableCell>
-
-                <InventoryTableActions
-                  onEdit={onEdit ? () => onEdit(item) : undefined}
-                  onDelete={onDelete ? () => onDelete(item) : undefined}
-                />
               </TableRow>
             ))
           )}

@@ -52,7 +52,7 @@ export function InventoryControls({
     <div className="flex flex-col gap-4 mb-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <TabsList className="h-9">
-          <TabsTrigger value="raw-materials" className="gap-2 text-sm">
+          <TabsTrigger value="raw-materials" className="gap-2 text-sm mr-2">
             Raw Materials
             {rmAlerts > 0 && (
               <Badge variant="destructive" className="h-4 text-[10px] px-1 ml-2">
@@ -60,7 +60,7 @@ export function InventoryControls({
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="recipes" className="gap-2 text-sm">
+          <TabsTrigger value="recipes" className="gap-2 text-sm mr-2">
             Recipes
             {recipeAlerts > 0 && (
               <Badge
@@ -82,17 +82,20 @@ export function InventoryControls({
 
         <div className="flex gap-2">
           {activeTab === "raw-materials" && (
-            <Button size="sm" onClick={onAddRm} className="gap-1.5">
+            <Button size="sm" onClick={onAddRm} className="gap-1.5 p-4 cursor-pointer">
               <Plus className="h-4 w-4" /> Add Material
             </Button>
           )}
           {activeTab === "recipes" && (
-            <Button size="sm" onClick={onAddRecipe} className="gap-1.5">
+            <Button
+              size="sm"
+              onClick={onAddRecipe}
+              className="gap-1.5 p-4 cursor-pointer">
               <Plus className="h-4 w-4" /> Add Recipe
             </Button>
           )}
           {activeTab === "product-menus" && (
-            <Button size="sm" onClick={onAddPm} className="gap-1.5">
+            <Button size="sm" onClick={onAddPm} className="gap-1.5 p-4 cursor-pointer">
               <Plus className="h-4 w-4" /> Add Product
             </Button>
           )}

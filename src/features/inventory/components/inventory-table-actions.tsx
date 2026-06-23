@@ -12,19 +12,19 @@ export function InventoryTableActions({ onEdit, onDelete }: InventoryTableAction
 
   return (
     <TableCell>
-      <div className="flex gap-1 justify-end">
-        {onEdit && (
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onEdit}>
-            <Pencil className="h-3.5 w-3.5" />
-          </Button>
-        )}
+      <div className="flex gap-2 justify-start">
         {onDelete && (
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-destructive hover:text-destructive"
+            className="h-8 w-8 text-destructive hover:text-destructive bg-destructive/10"
             onClick={onDelete}>
             <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        )}
+        {onEdit && (
+          <Button variant="ghost" size="icon" className="h-8 w-8 " onClick={onEdit}>
+            <Pencil className="h-3.5 w-3.5 " />
           </Button>
         )}
       </div>

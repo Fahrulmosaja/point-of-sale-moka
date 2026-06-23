@@ -36,13 +36,14 @@ export function RecipeTable({ items, productMenus, onEdit, onDelete }: RecipeTab
       <Table>
         <TableHeader>
           <TableRow>
+            {/* {(onEdit || onDelete) && <TableHead className="w-20" />} */}
+            <TableHead>Action</TableHead>
             <TableHead>Recipe Name</TableHead>
             <TableHead className="text-center">Ingredients</TableHead>
             <TableHead>Raw Materials Used</TableHead>
             <TableHead>Linked Product Menu</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right">Last Updated</TableHead>
-            {(onEdit || onDelete) && <TableHead className="w-20" />}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -59,6 +60,10 @@ export function RecipeTable({ items, productMenus, onEdit, onDelete }: RecipeTab
 
               return (
                 <TableRow key={item.id}>
+                  <InventoryTableActions
+                    onEdit={onEdit ? () => onEdit(item) : undefined}
+                    onDelete={onDelete ? () => onDelete(item) : undefined}
+                  />
                   <TableCell>
                     <div className="flex flex-col">
                       <span className="font-medium">{item.name}</span>
@@ -132,11 +137,6 @@ export function RecipeTable({ items, productMenus, onEdit, onDelete }: RecipeTab
                   <TableCell className="text-right text-muted-foreground">
                     {formatDate(item.updatedAt)}
                   </TableCell>
-
-                  <InventoryTableActions
-                    onEdit={onEdit ? () => onEdit(item) : undefined}
-                    onDelete={onDelete ? () => onDelete(item) : undefined}
-                  />
                 </TableRow>
               );
             })

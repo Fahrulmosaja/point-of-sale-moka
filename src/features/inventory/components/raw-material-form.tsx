@@ -107,12 +107,12 @@ export function RawMaterialForm({ open, onClose, editItem }: RawMaterialFormProp
               <Input
                 id="rm-minstk"
                 type="number"
-                min="0"
+                min="10"
                 step="0.01"
                 {...register("minimumStock", {
                   required: true,
                   valueAsNumber: true,
-                  min: { value: 0, message: "Must be ≥ 0" },
+                  min: { value: 10, message: "Must be ≥ 10" },
                 })}
               />
             </div>
